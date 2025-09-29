@@ -25,13 +25,17 @@ class AndwImageSizes {
 
     public function add_custom_image_sizes() {
         foreach ($this->custom_sizes as $name => $data) {
-            add_image_size($name, $data['width'], $data['height'], $data['crop']);
+            $width = get_option('andw_image_width_' . $name, $data['width']);
+            $height = get_option('andw_image_height_' . $name, $data['height']);
+            add_image_size($name, intval($width), intval($height), $data['crop']);
         }
     }
 
     public function add_custom_sizes_to_media_chooser($sizes) {
         foreach ($this->custom_sizes as $name => $data) {
-            $sizes[$name] = $data['label'] . ' (' . $data['width'] . 'x' . ($data['height'] ?: '自動') . ')';
+            $width = get_option('andw_image_width_' . $name, $data['width']);
+            $height = get_option('andw_image_height_' . $name, $data['height']);
+            $sizes[$name] = $data['label'] . ' (' . $width . 'x' . ($height ?: '自動') . ')';
         }
         return $sizes;
     }
