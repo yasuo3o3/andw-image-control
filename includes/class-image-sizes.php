@@ -74,7 +74,12 @@ class AndwImageSizes {
     }
 
     public static function get_size_options() {
-        $instance = new self();
+        static $instance = null;
+
+        if ($instance === null) {
+            $instance = new self();
+        }
+
         $options = array('' => __('変更しない', 'andw-image-control'));
 
         foreach ($instance->custom_sizes as $name => $data) {
