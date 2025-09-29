@@ -308,25 +308,68 @@ class AndwImageControlSettings {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
-            // サムネイル品質フィールドを追加
-            var thumbnailRow = $('input[name="thumbnail_size_h"]').closest('tr');
+            // サムネイルを4行構成に変更
+            var thumbnailRow = $('input[name="thumbnail_size_w"]').closest('tr');
             if (thumbnailRow.length) {
-                var thumbnailCell = thumbnailRow.find('td').first();
-                thumbnailCell.append(' ／ 品質 <input type="number" name="andw_jpeg_quality_thumbnail" value="<?php echo esc_attr($thumbnail_quality); ?>" min="1" max="100" class="small-text" style="width: 70px;" />');
+                var thumbnailTable = thumbnailRow.closest('table');
+                var thumbnailIndex = thumbnailRow.index();
+
+                // 既存の行を分割して再構成
+                var widthInput = thumbnailRow.find('input[name="thumbnail_size_w"]');
+                var heightInput = $('input[name="thumbnail_size_h"]');
+                var cropCheckbox = $('input[name="thumbnail_crop"]');
+                var cropLabel = cropCheckbox.next('label');
+
+                // 新しい行を作成
+                var widthRow = '<tr><th scope="row">幅</th><td><input type="number" name="thumbnail_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
+                var heightRow = '<tr><th scope="row">高さ</th><td><input type="number" name="thumbnail_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
+                var qualityRow = '<tr><th scope="row">品質</th><td><input type="number" name="andw_jpeg_quality_thumbnail" value="<?php echo esc_attr($thumbnail_quality); ?>" min="1" max="100" class="small-text" style="text-align: right;" /></td></tr>';
+                var cropRow = '<tr><th scope="row"></th><td><input type="checkbox" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> <label for="thumbnail_crop">' + cropLabel.text() + '</label></td></tr>';
+
+                // 既存の行を削除
+                thumbnailRow.remove();
+                $('input[name="thumbnail_size_h"]').closest('tr').remove();
+
+                // 新しい行を挿入
+                thumbnailTable.find('tr').eq(thumbnailIndex - 1).after(widthRow + heightRow + qualityRow + cropRow);
             }
 
-            // 中サイズ品質フィールドを追加
-            var mediumRow = $('input[name="medium_size_h"]').closest('tr');
+            // 中サイズを3行構成に変更
+            var mediumRow = $('input[name="medium_size_w"]').closest('tr');
             if (mediumRow.length) {
-                var mediumCell = mediumRow.find('td').first();
-                mediumCell.append(' ／ 品質 <input type="number" name="andw_jpeg_quality_medium" value="<?php echo esc_attr($medium_quality); ?>" min="1" max="100" class="small-text" style="width: 70px;" />');
+                var mediumTable = mediumRow.closest('table');
+                var mediumIndex = mediumRow.index();
+
+                var widthInput = mediumRow.find('input[name="medium_size_w"]');
+                var heightInput = $('input[name="medium_size_h"]');
+
+                var widthRow = '<tr><th scope="row">幅の上限</th><td><input type="number" name="medium_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
+                var heightRow = '<tr><th scope="row">高さの上限</th><td><input type="number" name="medium_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
+                var qualityRow = '<tr><th scope="row">品質</th><td><input type="number" name="andw_jpeg_quality_medium" value="<?php echo esc_attr($medium_quality); ?>" min="1" max="100" class="small-text" style="text-align: right;" /></td></tr>';
+
+                mediumRow.remove();
+                $('input[name="medium_size_h"]').closest('tr').remove();
+
+                mediumTable.find('tr').eq(mediumIndex - 1).after(widthRow + heightRow + qualityRow);
             }
 
-            // 大サイズ品質フィールドを追加
-            var largeRow = $('input[name="large_size_h"]').closest('tr');
+            // 大サイズを3行構成に変更
+            var largeRow = $('input[name="large_size_w"]').closest('tr');
             if (largeRow.length) {
-                var largeCell = largeRow.find('td').first();
-                largeCell.append(' ／ 品質 <input type="number" name="andw_jpeg_quality_large" value="<?php echo esc_attr($large_quality); ?>" min="1" max="100" class="small-text" style="width: 70px;" />');
+                var largeTable = largeRow.closest('table');
+                var largeIndex = largeRow.index();
+
+                var widthInput = largeRow.find('input[name="large_size_w"]');
+                var heightInput = $('input[name="large_size_h"]');
+
+                var widthRow = '<tr><th scope="row">幅の上限</th><td><input type="number" name="large_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
+                var heightRow = '<tr><th scope="row">高さの上限</th><td><input type="number" name="large_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
+                var qualityRow = '<tr><th scope="row">品質</th><td><input type="number" name="andw_jpeg_quality_large" value="<?php echo esc_attr($large_quality); ?>" min="1" max="100" class="small-text" style="text-align: right;" /></td></tr>';
+
+                largeRow.remove();
+                $('input[name="large_size_h"]').closest('tr').remove();
+
+                largeTable.find('tr').eq(largeIndex - 1).after(widthRow + heightRow + qualityRow);
             }
         });
         </script>
