@@ -1,0 +1,49 @@
+andW Media Control - Changelog
+====================================
+
+v0.2.0 - 2025-09-30
+------------------
+
+CRITICAL SECURITY FIXES:
+* Fixed libxml_disable_entity_loader() deprecation in PHP 8+ and LIBXML_NOENT DoS vulnerability in SVG processing
+* Migrated from DOMDocument to WordPress standard wp_kses() based secure SVG sanitization
+* Enhanced WordPress security standards compliance (input validation, output escaping, nonce verification)
+
+MAJOR BUG FIXES:
+* Resolved AndwImageSizes class singleton pattern to prevent hook duplicate registration
+* Fixed media modal thumbnail display issues caused by CSS position:relative conflicts
+* Fixed thumbnail crop checkbox save functionality that wasn't persisting correctly
+* Removed usage of non-existent remove_settings_field() function
+
+CODE QUALITY IMPROVEMENTS:
+* Implemented proper singleton pattern for AndwImageSizes class
+* Enhanced error handling and input validation throughout codebase
+* Improved CSS specificity and removed conflicting styles
+* Added comprehensive nonce verification for security
+
+DOCUMENTATION:
+* Updated readme.txt for WordPress.org Plugin Directory compliance
+* Added comprehensive README.md with usage instructions
+* Created CHANGELOG.txt and DEVELOPER.md for development workflow
+* Enhanced inline code documentation
+
+
+v0.01 - 2025-09-29
+------------------
+
+INITIAL RELEASE:
+* JPEG quality customization by image size
+* PNG to JPEG automatic conversion with quality control
+* 8 custom image sizes (360px, 480px, 600px, 720px, 960px, 1200px, 1440px, 1920px)
+* Enhanced media library UI with MIME type labels
+* Secure SVG upload support with sanitization
+* WordPress Settings API integration
+* Media settings integration in WordPress admin
+
+FEATURES:
+* Custom image size registration and management
+* Thumbnail crop checkbox functionality
+* Media UI enhancements with JavaScript
+* SVG file security sanitization
+* PNG converter with quality settings
+* JPEG quality control per image size
