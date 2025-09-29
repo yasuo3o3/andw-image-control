@@ -272,15 +272,6 @@ class AndwImageControlSettings {
     }
 
     public function modify_default_media_fields() {
-        // WordPress標準の画像サイズ設定を再登録
-        register_setting('media', 'thumbnail_size_w', 'intval');
-        register_setting('media', 'thumbnail_size_h', 'intval');
-        register_setting('media', 'thumbnail_crop', 'intval');
-        register_setting('media', 'medium_size_w', 'intval');
-        register_setting('media', 'medium_size_h', 'intval');
-        register_setting('media', 'large_size_w', 'intval');
-        register_setting('media', 'large_size_h', 'intval');
-
         // 標準サイズの品質設定を登録
         register_setting('media', 'andw_jpeg_quality_thumbnail', array(
             'type' => 'integer',
@@ -298,45 +289,40 @@ class AndwImageControlSettings {
             'default' => 82,
         ));
 
-        // WordPress標準の設定フィールドを置き換え
-        remove_settings_field('thumbnail_size_w', 'media', 'default');
-        remove_settings_field('thumbnail_size_h', 'media', 'default');
-        remove_settings_field('medium_size_w', 'media', 'default');
-        remove_settings_field('medium_size_h', 'media', 'default');
-        remove_settings_field('large_size_w', 'media', 'default');
-        remove_settings_field('large_size_h', 'media', 'default');
-
-        // カスタムフィールドを追加
-        add_settings_field('andw_thumbnail_size', __('サムネイル', 'andw-image-control'), array($this, 'standard_size_field_callback'), 'media', 'default', array('size_type' => 'thumbnail'));
-        add_settings_field('andw_medium_size', __('中サイズ', 'andw-image-control'), array($this, 'standard_size_field_callback'), 'media', 'default', array('size_type' => 'medium'));
-        add_settings_field('andw_large_size', __('大サイズ', 'andw-image-control'), array($this, 'standard_size_field_callback'), 'media', 'default', array('size_type' => 'large'));
+        // WordPressの標準フィールドの後に品質フィールドを追加するスクリプトを追加
+        add_action('admin_footer-options-media.php', array($this, 'add_quality_fields_script'));
     }
 
-    public function standard_size_field_callback($args) {
-        $size_type = $args['size_type'];
+    public function add_quality_fields_script() {
+        $thumbnail_quality = get_option('andw_jpeg_quality_thumbnail', 82);
+        $medium_quality = get_option('andw_jpeg_quality_medium', 82);
+        $large_quality = get_option('andw_jpeg_quality_large', 82);
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // サムネイル品質フィールドを追加
+            var thumbnailRow = $('input[name="thumbnail_size_h"]').closest('tr');
+            if (thumbnailRow.length) {
+                var thumbnailCell = thumbnailRow.find('td').first();
+                thumbnailCell.append(' ／ 品質 <input type="number" name="andw_jpeg_quality_thumbnail" value="<?php echo esc_attr($thumbnail_quality); ?>" min="1" max="100" class="small-text" style="width: 70px;" />');
+            }
 
-        $width_value = get_option($size_type . '_size_w', '');
-        $height_value = get_option($size_type . '_size_h', '');
-        $quality_value = get_option('andw_jpeg_quality_' . $size_type, 82);
-        $crop_value = ($size_type === 'thumbnail') ? get_option('thumbnail_crop', 0) : '';
+            // 中サイズ品質フィールドを追加
+            var mediumRow = $('input[name="medium_size_h"]').closest('tr');
+            if (mediumRow.length) {
+                var mediumCell = mediumRow.find('td').first();
+                mediumCell.append(' ／ 品質 <input type="number" name="andw_jpeg_quality_medium" value="<?php echo esc_attr($medium_quality); ?>" min="1" max="100" class="small-text" style="width: 70px;" />');
+            }
 
-        echo '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">';
-        echo '<span>幅</span>';
-        echo '<input type="number" name="' . $size_type . '_size_w" value="' . esc_attr($width_value) . '" min="0" class="small-text" style="width: 70px;" />';
-        echo '<span>×</span>';
-        echo '<span>高さ</span>';
-        echo '<input type="number" name="' . $size_type . '_size_h" value="' . esc_attr($height_value) . '" min="0" class="small-text" style="width: 70px;" />';
-
-        if ($size_type === 'thumbnail') {
-            echo '<br><input type="checkbox" name="thumbnail_crop" value="1" ' . checked(1, $crop_value, false) . ' />';
-            echo '<label for="thumbnail_crop">' . __('切り抜いて正確なサイズに調整する', 'default') . '</label>';
-            echo '<br>';
-        }
-
-        echo '<span>／</span>';
-        echo '<span>品質</span>';
-        echo '<input type="number" name="andw_jpeg_quality_' . $size_type . '" value="' . esc_attr($quality_value) . '" min="1" max="100" class="small-text" style="width: 70px;" />';
-        echo '</div>';
+            // 大サイズ品質フィールドを追加
+            var largeRow = $('input[name="large_size_h"]').closest('tr');
+            if (largeRow.length) {
+                var largeCell = largeRow.find('td').first();
+                largeCell.append(' ／ 品質 <input type="number" name="andw_jpeg_quality_large" value="<?php echo esc_attr($large_quality); ?>" min="1" max="100" class="small-text" style="width: 70px;" />');
+            }
+        });
+        </script>
+        <?php
     }
 
     public function select_field_callback($args) {
