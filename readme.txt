@@ -4,7 +4,7 @@ Tags: media, jpeg, png, svg, image-quality
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.01
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,15 @@ andW Media Control は WordPress の画像処理を拡張するプラグイン�
 透過は保持されず、白背景で塗りつぶされます。元のPNGファイルも保持されます。
 
 == Changelog ==
+
+= 0.2.0 =
+* レビューと修正対応
+* セキュリティ修正: SVG処理における libxml_disable_entity_loader() 非推奨化と LIBXML_NOENT DoS脆弱性を修正
+* WordPress標準の wp_kses() ベースの安全なSVGサニタイズに移行
+* AndwImageSizes クラスのシングルトンパターン実装でフック重複登録問題を解決
+* メディアモーダルサムネイル表示問題を修正
+* サムネイルクロップチェックボックス保存機能を修正
+* WordPress セキュリティ標準への準拠（入力値検証、出力エスケープ、nonce検証の強化）
 
 = 0.01 =
 * 初回リリース
