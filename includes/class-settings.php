@@ -378,7 +378,7 @@ class AndwImageControlSettings {
                     '<span>高さ</span>' +
                     '<input type="number" name="thumbnail_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
                     '<span>品質</span>' +
-                    '<input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
+                    '<input type="number" name="andw_jpeg_quality_thumbnail" value="' + <?php echo esc_js($thumbnail_quality); ?> + '" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '<div>' +
                     '<input type="checkbox" id="thumbnail_crop" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> ' +

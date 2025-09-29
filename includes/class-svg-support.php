@@ -81,7 +81,7 @@ class AndwSvgSupport {
         );
 
         $allowed_attributes = array(
-            'id', 'class', 'style', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
+            'id', 'class', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
             'width', 'height', 'd', 'fill', 'stroke', 'stroke-width', 'stroke-linecap',
             'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'opacity',
             'fill-opacity', 'stroke-opacity', 'transform', 'viewBox', 'xmlns',
@@ -111,8 +111,14 @@ class AndwSvgSupport {
         $dom->formatOutput = false;
         $dom->preserveWhiteSpace = true;
 
+        // XXE攻撃防止のための設定
         libxml_use_internal_errors(true);
-        $loaded = $dom->loadXML($content);
+        $previous_libxml_disable_entity_loader = libxml_disable_entity_loader(true);
+
+        $loaded = $dom->loadXML($content, LIBXML_NONET | LIBXML_NOBLANKS | LIBXML_NOENT);
+
+        // 設定を元に戻す
+        libxml_disable_entity_loader($previous_libxml_disable_entity_loader);
         libxml_clear_errors();
 
         if (!$loaded) {
