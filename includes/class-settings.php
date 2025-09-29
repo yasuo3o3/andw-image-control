@@ -412,7 +412,7 @@ class AndwImageControlSettings {
                     '<span>高さ</span>' +
                     '<input type="number" name="medium_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
                     '<span>品質</span>' +
-                    '<input type="number" name="andw_jpeg_quality_medium" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
+                    '<input type="number" name="andw_jpeg_quality_medium" value="' + <?php echo esc_js($medium_quality); ?> + '" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '</td></tr>';
 
@@ -440,7 +440,7 @@ class AndwImageControlSettings {
                     '<span>高さ</span>' +
                     '<input type="number" name="large_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
                     '<span>品質</span>' +
-                    '<input type="number" name="andw_jpeg_quality_large" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
+                    '<input type="number" name="andw_jpeg_quality_large" value="' + <?php echo esc_js($large_quality); ?> + '" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '</td></tr>';
 
