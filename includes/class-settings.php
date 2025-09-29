@@ -360,7 +360,7 @@ class AndwImageControlSettings {
                     '<span>高さ</span>' +
                     '<input type="number" name="thumbnail_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
                     '<span>品質</span>' +
-                    '<input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '<div>' +
                     '<input type="checkbox" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> ' +
@@ -394,7 +394,7 @@ class AndwImageControlSettings {
                     '<span>高さ</span>' +
                     '<input type="number" name="medium_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
                     '<span>品質</span>' +
-                    '<input type="number" name="andw_jpeg_quality_medium" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<input type="number" name="andw_jpeg_quality_medium" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '</td></tr>';
 
@@ -422,7 +422,7 @@ class AndwImageControlSettings {
                     '<span>高さ</span>' +
                     '<input type="number" name="large_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
                     '<span>品質</span>' +
-                    '<input type="number" name="andw_jpeg_quality_large" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<input type="number" name="andw_jpeg_quality_large" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '</td></tr>';
 
