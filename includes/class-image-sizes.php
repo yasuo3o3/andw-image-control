@@ -40,12 +40,8 @@ class AndwImageSizes {
         return $sizes;
     }
 
-    public function update_default_image_sizes() {
-        $enable_override = get_option('andw_override_default_sizes', false);
-        if (!$enable_override) {
-            return;
-        }
 
+    public function update_default_image_sizes() {
         $thumbnail_size = get_option('andw_thumbnail_override_size', '');
         $medium_size = get_option('andw_medium_override_size', '');
         $large_size = get_option('andw_large_override_size', '');
@@ -81,4 +77,5 @@ class AndwImageSizes {
 
         return $options;
     }
+
 }

@@ -39,11 +39,6 @@ class AndwImageControlSettings {
             'default' => true,
         ));
 
-        register_setting('media', 'andw_override_default_sizes', array(
-            'type' => 'boolean',
-            'default' => false,
-        ));
-
         register_setting('media', 'andw_thumbnail_override_size', array(
             'type' => 'string',
             'default' => '',
@@ -58,6 +53,10 @@ class AndwImageControlSettings {
             'type' => 'string',
             'default' => '',
         ));
+
+
+
+
 
         $image_sizes = AndwJpegQuality::get_available_image_sizes();
         $custom_sizes = $this->get_custom_image_sizes();
@@ -78,7 +77,7 @@ class AndwImageControlSettings {
             register_setting('media', 'andw_jpeg_quality_' . $size_name, array(
                 'type' => 'integer',
                 'sanitize_callback' => array($this, 'sanitize_quality'),
-                'default' => '',
+                'default' => 82,
             ));
         }
 
@@ -89,14 +88,6 @@ class AndwImageControlSettings {
             'media'
         );
 
-        add_settings_field(
-            'andw_jpeg_quality_default',
-            __('デフォルトJPEG品質', 'andw-image-control'),
-            array($this, 'quality_field_callback'),
-            'media',
-            'andw_image_control_section',
-            array('option_name' => 'andw_jpeg_quality_default', 'label' => __('すべてのサイズのデフォルト品質（1-100）', 'andw-image-control'))
-        );
 
         foreach ($image_sizes as $size_name => $size_label) {
             if (isset($custom_sizes[$size_name])) {
@@ -116,7 +107,7 @@ class AndwImageControlSettings {
                     array($this, 'quality_field_callback'),
                     'media',
                     'andw_image_control_section',
-                    array('option_name' => 'andw_jpeg_quality_' . $size_name, 'label' => sprintf(__('%sの品質（空白の場合はデフォルト使用）', 'andw-image-control'), $size_label))
+                    array('option_name' => 'andw_jpeg_quality_' . $size_name, 'label' => '')
                 );
             }
         }
@@ -132,11 +123,11 @@ class AndwImageControlSettings {
 
         add_settings_field(
             'andw_png_to_jpeg_quality',
-            __('PNG→JPEG変換品質', 'andw-image-control'),
-            array($this, 'quality_field_callback'),
+            __('PNG→JPEG 品質', 'andw-image-control'),
+            array($this, 'simple_quality_field_callback'),
             'media',
             'andw_image_control_section',
-            array('option_name' => 'andw_png_to_jpeg_quality', 'label' => __('PNG→JPEG変換時の品質（1-100）', 'andw-image-control'))
+            array('option_name' => 'andw_png_to_jpeg_quality')
         );
 
         add_settings_field(
@@ -157,15 +148,6 @@ class AndwImageControlSettings {
             array('option_name' => 'andw_svg_sanitize', 'label' => __('SVGアップロード時にセキュリティサニタイズを実行', 'andw-image-control'))
         );
 
-        add_settings_field(
-            'andw_override_default_sizes',
-            __('標準サイズ上書き', 'andw-image-control'),
-            array($this, 'checkbox_field_callback'),
-            'media',
-            'andw_image_control_section',
-            array('option_name' => 'andw_override_default_sizes', 'label' => __('WordPress標準の画像サイズを独自サイズで上書き', 'andw-image-control'))
-        );
-
         $size_options = AndwImageSizes::get_size_options();
 
         add_settings_field(
@@ -174,7 +156,7 @@ class AndwImageControlSettings {
             array($this, 'select_field_callback'),
             'media',
             'andw_image_control_section',
-            array('option_name' => 'andw_thumbnail_override_size', 'options' => $size_options, 'label' => __('サムネイルサイズの上書き設定', 'andw-image-control'))
+            array('option_name' => 'andw_thumbnail_override_size', 'options' => $size_options)
         );
 
         add_settings_field(
@@ -183,7 +165,7 @@ class AndwImageControlSettings {
             array($this, 'select_field_callback'),
             'media',
             'andw_image_control_section',
-            array('option_name' => 'andw_medium_override_size', 'options' => $size_options, 'label' => __('中サイズの上書き設定', 'andw-image-control'))
+            array('option_name' => 'andw_medium_override_size', 'options' => $size_options)
         );
 
         add_settings_field(
@@ -192,7 +174,7 @@ class AndwImageControlSettings {
             array($this, 'select_field_callback'),
             'media',
             'andw_image_control_section',
-            array('option_name' => 'andw_large_override_size', 'options' => $size_options, 'label' => __('大サイズの上書き設定', 'andw-image-control'))
+            array('option_name' => 'andw_large_override_size', 'options' => $size_options)
         );
     }
 
@@ -221,19 +203,6 @@ class AndwImageControlSettings {
         echo '<label for="' . esc_attr($option_name) . '">' . esc_html($label) . '</label>';
     }
 
-    public function select_field_callback($args) {
-        $option_name = $args['option_name'];
-        $options = $args['options'];
-        $label = $args['label'];
-        $value = get_option($option_name, '');
-
-        echo '<select id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '">';
-        foreach ($options as $key => $option_label) {
-            echo '<option value="' . esc_attr($key) . '" ' . selected($key, $value, false) . '>' . esc_html($option_label) . '</option>';
-        }
-        echo '</select>';
-        echo '<p class="description">' . esc_html($label) . '</p>';
-    }
 
     public function sanitize_quality($value) {
         if ($value === '' || $value === null) {
@@ -274,7 +243,7 @@ class AndwImageControlSettings {
 
         $width_value = get_option($width_option, $size_data['width']);
         $height_value = get_option($height_option, $size_data['height']);
-        $quality_value = get_option($quality_option, '');
+        $quality_value = get_option($quality_option, 82);
 
         echo '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">';
         echo '<span>幅</span>';
@@ -284,7 +253,26 @@ class AndwImageControlSettings {
         echo '<input type="number" id="' . esc_attr($height_option) . '" name="' . esc_attr($height_option) . '" value="' . esc_attr($height_value) . '" min="0" class="small-text" style="width: 70px;" />';
         echo '<span>／</span>';
         echo '<span>品質</span>';
-        echo '<input type="number" id="' . esc_attr($quality_option) . '" name="' . esc_attr($quality_option) . '" value="' . esc_attr($quality_value) . '" min="1" max="100" class="small-text" style="width: 70px;" />';
+        echo '<input type="number" id="' . esc_attr($quality_option) . '" name="' . esc_attr($quality_option) . '" value="' . esc_attr($quality_value ?: 82) . '" min="1" max="100" class="small-text" style="width: 70px;" />';
         echo '</div>';
+    }
+
+    public function simple_quality_field_callback($args) {
+        $option_name = $args['option_name'];
+        $value = get_option($option_name, 85);
+
+        echo '<input type="number" id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '" value="' . esc_attr($value) . '" min="1" max="100" class="small-text" />';
+    }
+
+    public function select_field_callback($args) {
+        $option_name = $args['option_name'];
+        $options = $args['options'];
+        $value = get_option($option_name, '');
+
+        echo '<select id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '">';
+        foreach ($options as $key => $option_label) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($key, $value, false) . '>' . esc_html($option_label) . '</option>';
+        }
+        echo '</select>';
     }
 }
