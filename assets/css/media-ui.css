@@ -37,9 +37,9 @@
     background-color: #666;
 }
 
-.attachment .thumbnail,
-.media-modal .attachment .thumbnail {
-    position: relative;
+.attachment .thumbnail .andw-mime-label,
+.media-modal .attachment .thumbnail .andw-mime-label {
+    position: absolute;
 }
 
 .wp-list-table .column-title .media-icon {

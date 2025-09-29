@@ -10,7 +10,7 @@ class AndwSvgSupport {
         add_filter('upload_mimes', array($this, 'add_svg_mime_type'));
         add_filter('wp_check_filetype_and_ext', array($this, 'fix_svg_mime_type'), 10, 4);
         add_filter('wp_handle_upload_prefilter', array($this, 'sanitize_svg'));
-        // add_action('admin_head', array($this, 'fix_svg_display'));  // メディアモーダルの画像表示問題を回避するため無効化
+        add_action('admin_head', array($this, 'fix_svg_display'));
     }
 
     public function add_svg_mime_type($mimes) {
