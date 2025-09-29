@@ -203,6 +203,14 @@ class AndwImageControlSettings {
             'andw_image_control_section',
             array('option_name' => 'andw_large_override_size', 'options' => $size_options)
         );
+
+        add_settings_field(
+            'andw_regeneration_info',
+            __('既存メディアの品質変更', 'andw-image-control'),
+            array($this, 'regeneration_info_callback'),
+            'media',
+            'andw_image_control_section'
+        );
     }
 
     public function add_settings_page() {
@@ -330,7 +338,7 @@ class AndwImageControlSettings {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
-            // サムネイルを4行構成に変更
+            // サムネイルを横並び1行に変更
             var thumbnailRow = $('input[name="thumbnail_size_w"]').closest('tr');
             if (thumbnailRow.length) {
                 var thumbnailTable = thumbnailRow.closest('table');
@@ -342,22 +350,33 @@ class AndwImageControlSettings {
                 var cropCheckbox = $('input[name="thumbnail_crop"]');
                 var cropLabel = cropCheckbox.next('label');
 
-                // 新しい行を作成
-                var headerRow = '<tr><th scope="row">サムネイル</th><td></td></tr>';
-                var widthRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px;">幅</th><td style="padding-top: 2px;"><input type="number" name="thumbnail_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
-                var heightRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px; padding-bottom: 2px;">高さ</th><td style="padding-top: 2px; padding-bottom: 2px;"><input type="number" name="thumbnail_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
-                var qualityRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px; padding-bottom: 2px;">品質</th><td style="padding-top: 2px; padding-bottom: 2px;"><input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="text-align: right;" /></td></tr>';
-                var cropRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px;"></th><td style="padding-top: 2px;"><input type="checkbox" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> <label for="thumbnail_crop">' + cropLabel.text() + '</label></td></tr>';
+                // 横並び1行でサムネイル設定を作成
+                var thumbnailRowHtml = '<tr style="margin-bottom: 15px;"><th scope="row">サムネイル</th>' +
+                    '<td>' +
+                    '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">' +
+                    '<span>幅</span>' +
+                    '<input type="number" name="thumbnail_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<span>×</span>' +
+                    '<span>高さ</span>' +
+                    '<input type="number" name="thumbnail_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<span>品質</span>' +
+                    '<input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '</div>' +
+                    '<div>' +
+                    '<input type="checkbox" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> ' +
+                    '<label for="thumbnail_crop">' + cropLabel.text() + '</label>' +
+                    '</div>' +
+                    '</td></tr>';
 
                 // 既存の行を削除
                 thumbnailRow.remove();
                 $('input[name="thumbnail_size_h"]').closest('tr').remove();
 
                 // 新しい行を挿入
-                thumbnailTable.find('tr').eq(thumbnailIndex - 1).after(headerRow + widthRow + heightRow + qualityRow + cropRow);
+                thumbnailTable.find('tr').eq(thumbnailIndex - 1).after(thumbnailRowHtml);
             }
 
-            // 中サイズを3行構成に変更
+            // 中サイズを横並び1行に変更
             var mediumRow = $('input[name="medium_size_w"]').closest('tr');
             if (mediumRow.length) {
                 var mediumTable = mediumRow.closest('table');
@@ -366,18 +385,26 @@ class AndwImageControlSettings {
                 var widthInput = mediumRow.find('input[name="medium_size_w"]');
                 var heightInput = $('input[name="medium_size_h"]');
 
-                var headerRow = '<tr><th scope="row">中サイズ</th><td></td></tr>';
-                var widthRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px;">幅の上限</th><td style="padding-top: 2px;"><input type="number" name="medium_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
-                var heightRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px; padding-bottom: 2px;">高さの上限</th><td style="padding-top: 2px; padding-bottom: 2px;"><input type="number" name="medium_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
-                var qualityRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px;">品質</th><td style="padding-top: 2px;"><input type="number" name="andw_jpeg_quality_medium" value="82" min="1" max="100" class="small-text" style="text-align: right;" /></td></tr>';
+                var mediumRowHtml = '<tr style="margin-bottom: 15px;"><th scope="row">中サイズ</th>' +
+                    '<td>' +
+                    '<div style="display: flex; align-items: center; gap: 8px;">' +
+                    '<span>幅</span>' +
+                    '<input type="number" name="medium_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<span>×</span>' +
+                    '<span>高さ</span>' +
+                    '<input type="number" name="medium_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<span>品質</span>' +
+                    '<input type="number" name="andw_jpeg_quality_medium" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '</div>' +
+                    '</td></tr>';
 
                 mediumRow.remove();
                 $('input[name="medium_size_h"]').closest('tr').remove();
 
-                mediumTable.find('tr').eq(mediumIndex - 1).after(headerRow + widthRow + heightRow + qualityRow);
+                mediumTable.find('tr').eq(mediumIndex - 1).after(mediumRowHtml);
             }
 
-            // 大サイズを3行構成に変更
+            // 大サイズを横並び1行に変更
             var largeRow = $('input[name="large_size_w"]').closest('tr');
             if (largeRow.length) {
                 var largeTable = largeRow.closest('table');
@@ -386,15 +413,23 @@ class AndwImageControlSettings {
                 var widthInput = largeRow.find('input[name="large_size_w"]');
                 var heightInput = $('input[name="large_size_h"]');
 
-                var headerRow = '<tr><th scope="row">大サイズ</th><td></td></tr>';
-                var widthRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px;">幅の上限</th><td style="padding-top: 2px;"><input type="number" name="large_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
-                var heightRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px; padding-bottom: 2px;">高さの上限</th><td style="padding-top: 2px; padding-bottom: 2px;"><input type="number" name="large_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="text-align: right;" /></td></tr>';
-                var qualityRow = '<tr style="border-top: 0;"><th scope="row" style="padding-top: 2px;">品質</th><td style="padding-top: 2px;"><input type="number" name="andw_jpeg_quality_large" value="82" min="1" max="100" class="small-text" style="text-align: right;" /></td></tr>';
+                var largeRowHtml = '<tr style="margin-bottom: 15px;"><th scope="row">大サイズ</th>' +
+                    '<td>' +
+                    '<div style="display: flex; align-items: center; gap: 8px;">' +
+                    '<span>幅</span>' +
+                    '<input type="number" name="large_size_w" value="' + widthInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<span>×</span>' +
+                    '<span>高さ</span>' +
+                    '<input type="number" name="large_size_h" value="' + heightInput.val() + '" min="0" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '<span>品質</span>' +
+                    '<input type="number" name="andw_jpeg_quality_large" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right;" />' +
+                    '</div>' +
+                    '</td></tr>';
 
                 largeRow.remove();
                 $('input[name="large_size_h"]').closest('tr').remove();
 
-                largeTable.find('tr').eq(largeIndex - 1).after(headerRow + widthRow + heightRow + qualityRow);
+                largeTable.find('tr').eq(largeIndex - 1).after(largeRowHtml);
             }
         });
         </script>
@@ -411,5 +446,14 @@ class AndwImageControlSettings {
             echo '<option value="' . esc_attr($key) . '" ' . selected($key, $value, false) . '>' . esc_html($option_label) . '</option>';
         }
         echo '</select>';
+    }
+
+    public function regeneration_info_callback() {
+        echo '<p style="margin: 0 0 10px 0;">' . esc_html__('設定を変更した後、既存のメディアに新しい品質を適用するには、以下のプラグインを使用してサムネイルを再生成してください。', 'andw-image-control') . '</p>';
+        echo '<ul style="margin: 10px 0; padding-left: 20px;">';
+        echo '<li><a href="https://wordpress.org/plugins/regenerate-thumbnails/" target="_blank">Regenerate Thumbnails</a> - ' . esc_html__('標準的なサムネイル再生成プラグイン', 'andw-image-control') . '</li>';
+        echo '<li><a href="https://wordpress.org/plugins/force-regenerate-thumbnails/" target="_blank">Force Regenerate Thumbnails</a> - ' . esc_html__('強制的にサムネイルを再生成する高機能プラグイン', 'andw-image-control') . '</li>';
+        echo '</ul>';
+        echo '<p style="margin: 10px 0 0 0; color: #666; font-size: 13px;">' . esc_html__('※これらのプラグインは別途インストールが必要です。', 'andw-image-control') . '</p>';
     }
 }
