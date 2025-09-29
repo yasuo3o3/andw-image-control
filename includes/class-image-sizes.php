@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) {
 
 class AndwImageSizes {
 
+    private static $hooks_registered = false;
+
     private $custom_sizes = array(
         'thumb-sm' => array('width' => 360, 'height' => 360, 'crop' => true, 'label' => 'サムネイル小'),
         'thumb-md' => array('width' => 480, 'height' => 480, 'crop' => true, 'label' => 'サムネイル中'),
@@ -18,9 +20,12 @@ class AndwImageSizes {
     );
 
     public function __construct() {
-        add_action('after_setup_theme', array($this, 'add_custom_image_sizes'));
-        add_filter('image_size_names_choose', array($this, 'add_custom_sizes_to_media_chooser'));
-        add_action('admin_init', array($this, 'update_default_image_sizes'));
+        if (!self::$hooks_registered) {
+            add_action('after_setup_theme', array($this, 'add_custom_image_sizes'));
+            add_filter('image_size_names_choose', array($this, 'add_custom_sizes_to_media_chooser'));
+            add_action('admin_init', array($this, 'update_default_image_sizes'));
+            self::$hooks_registered = true;
+        }
     }
 
     public function add_custom_image_sizes() {

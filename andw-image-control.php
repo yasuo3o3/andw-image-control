@@ -40,7 +40,7 @@ class AndwImageControl {
     private function init_hooks() {
         new AndwJpegQuality();
         new AndwPngConverter();
-        new AndwImageSizes();
+        AndwImageSizes::get_instance();
         new AndwMediaUI();
         new AndwSvgSupport();
         new AndwImageControlSettings();
