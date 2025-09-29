@@ -59,18 +59,22 @@ class AndwImageControlSettings {
             'default' => '',
         ));
 
-        $image_sizes = $this->get_custom_image_sizes();
-        foreach ($image_sizes as $size_name => $size_data) {
-            register_setting('media', 'andw_image_width_' . $size_name, array(
-                'type' => 'integer',
-                'sanitize_callback' => array($this, 'sanitize_dimension'),
-                'default' => $size_data['width'],
-            ));
-            register_setting('media', 'andw_image_height_' . $size_name, array(
-                'type' => 'integer',
-                'sanitize_callback' => array($this, 'sanitize_dimension'),
-                'default' => $size_data['height'],
-            ));
+        $image_sizes = AndwJpegQuality::get_available_image_sizes();
+        $custom_sizes = $this->get_custom_image_sizes();
+
+        foreach ($image_sizes as $size_name => $size_label) {
+            if (isset($custom_sizes[$size_name])) {
+                register_setting('media', 'andw_image_width_' . $size_name, array(
+                    'type' => 'integer',
+                    'sanitize_callback' => array($this, 'sanitize_dimension'),
+                    'default' => $custom_sizes[$size_name]['width'],
+                ));
+                register_setting('media', 'andw_image_height_' . $size_name, array(
+                    'type' => 'integer',
+                    'sanitize_callback' => array($this, 'sanitize_dimension'),
+                    'default' => $custom_sizes[$size_name]['height'],
+                ));
+            }
             register_setting('media', 'andw_jpeg_quality_' . $size_name, array(
                 'type' => 'integer',
                 'sanitize_callback' => array($this, 'sanitize_quality'),
@@ -94,15 +98,27 @@ class AndwImageControlSettings {
             array('option_name' => 'andw_jpeg_quality_default', 'label' => __('すべてのサイズのデフォルト品質（1-100）', 'andw-image-control'))
         );
 
-        foreach ($image_sizes as $size_name => $size_data) {
-            add_settings_field(
-                'andw_image_size_' . $size_name,
-                $size_data['label'],
-                array($this, 'image_size_field_callback'),
-                'media',
-                'andw_image_control_section',
-                array('size_name' => $size_name, 'size_data' => $size_data)
-            );
+        foreach ($image_sizes as $size_name => $size_label) {
+            if (isset($custom_sizes[$size_name])) {
+                $label = $custom_sizes[$size_name]['label'];
+                add_settings_field(
+                    'andw_image_size_' . $size_name,
+                    $label,
+                    array($this, 'image_size_field_callback'),
+                    'media',
+                    'andw_image_control_section',
+                    array('size_name' => $size_name, 'size_data' => $custom_sizes[$size_name])
+                );
+            } else {
+                add_settings_field(
+                    'andw_jpeg_quality_' . $size_name,
+                    sprintf(__('%s JPEG品質', 'andw-image-control'), $size_label),
+                    array($this, 'quality_field_callback'),
+                    'media',
+                    'andw_image_control_section',
+                    array('option_name' => 'andw_jpeg_quality_' . $size_name, 'label' => sprintf(__('%sの品質（空白の場合はデフォルト使用）', 'andw-image-control'), $size_label))
+                );
+            }
         }
 
         add_settings_field(
@@ -260,14 +276,14 @@ class AndwImageControlSettings {
         $height_value = get_option($height_option, $size_data['height']);
         $quality_value = get_option($quality_option, '');
 
-        echo '<div style="display: flex; align-items: center; gap: 8px;">';
-        echo '<label for="' . esc_attr($width_option) . '">' . esc_html__('幅', 'andw-image-control') . '</label>';
+        echo '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">';
+        echo '<span>幅</span>';
         echo '<input type="number" id="' . esc_attr($width_option) . '" name="' . esc_attr($width_option) . '" value="' . esc_attr($width_value) . '" min="0" class="small-text" style="width: 70px;" />';
         echo '<span>×</span>';
-        echo '<label for="' . esc_attr($height_option) . '">' . esc_html__('高さ', 'andw-image-control') . '</label>';
+        echo '<span>高さ</span>';
         echo '<input type="number" id="' . esc_attr($height_option) . '" name="' . esc_attr($height_option) . '" value="' . esc_attr($height_value) . '" min="0" class="small-text" style="width: 70px;" />';
-        echo '<span>/</span>';
-        echo '<label for="' . esc_attr($quality_option) . '">' . esc_html__('品質', 'andw-image-control') . '</label>';
+        echo '<span>／</span>';
+        echo '<span>品質</span>';
         echo '<input type="number" id="' . esc_attr($quality_option) . '" name="' . esc_attr($quality_option) . '" value="' . esc_attr($quality_value) . '" min="1" max="100" class="small-text" style="width: 70px;" />';
         echo '</div>';
     }
