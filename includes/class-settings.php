@@ -363,7 +363,7 @@ class AndwImageControlSettings {
                     '<input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '<div>' +
-                    '<input type="checkbox" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> ' +
+                    '<input type="checkbox" id="thumbnail_crop" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> ' +
                     '<label for="thumbnail_crop">' + cropLabel.text() + '</label>' +
                     '</div>' +
                     '</td></tr>';
