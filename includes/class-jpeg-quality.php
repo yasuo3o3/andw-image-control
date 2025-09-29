@@ -38,37 +38,7 @@ class AndwJpegQuality {
             return $GLOBALS['andw_current_image_size'];
         }
 
-        $backtrace = debug_backtrace();
-
-        foreach ($backtrace as $trace) {
-            if (isset($trace['function']) && $trace['function'] === 'wp_get_attachment_image_src' &&
-                isset($trace['args'][1]) && is_string($trace['args'][1])) {
-                return $trace['args'][1];
-            }
-
-            if (isset($trace['function']) && $trace['function'] === 'image_make_intermediate_size' &&
-                isset($trace['args'][2]) && is_array($trace['args'][2])) {
-
-                $width = $trace['args'][2]['width'] ?? 0;
-                $height = $trace['args'][2]['height'] ?? 0;
-
-                $image_sizes = wp_get_additional_image_sizes();
-                $default_sizes = array(
-                    'thumbnail' => array('width' => get_option('thumbnail_size_w'), 'height' => get_option('thumbnail_size_h')),
-                    'medium' => array('width' => get_option('medium_size_w'), 'height' => get_option('medium_size_h')),
-                    'large' => array('width' => get_option('large_size_w'), 'height' => get_option('large_size_h')),
-                );
-
-                $all_sizes = array_merge($default_sizes, $image_sizes);
-
-                foreach ($all_sizes as $size_name => $size_data) {
-                    if ($size_data['width'] == $width && $size_data['height'] == $height) {
-                        return $size_name;
-                    }
-                }
-            }
-        }
-
+        // デフォルト品質を使用（デバッグ関数の代替）
         return null;
     }
 
