@@ -327,8 +327,38 @@ class AndwImageControlSettings {
             'default' => 82,
         ));
 
+        // thumbnail_crop の保存処理を追加
+        add_action('admin_init', array($this, 'handle_thumbnail_crop_save'));
+        add_filter('pre_update_option_thumbnail_crop', array($this, 'handle_thumbnail_crop_option'), 10, 3);
+
         // WordPressの標準フィールドの後に品質フィールドを追加するスクリプトを追加
         add_action('admin_footer-options-media.php', array($this, 'add_quality_fields_script'));
+    }
+
+    public function handle_thumbnail_crop_save() {
+        // メディア設定ページでの保存時のみ処理
+        if (isset($_POST['option_page']) && $_POST['option_page'] === 'media') {
+            if (isset($_POST['thumbnail_crop'])) {
+                // チェックボックスがチェックされている場合
+                $crop_value = (int) $_POST['thumbnail_crop'];
+                update_option('thumbnail_crop', $crop_value);
+            } else {
+                // チェックボックスがチェックされていない場合（POSTされない）
+                update_option('thumbnail_crop', 0);
+            }
+        }
+    }
+
+    public function handle_thumbnail_crop_option($value, $old_value, $option) {
+        // メディア設定ページでの保存時に確実に処理
+        if (isset($_POST['option_page']) && $_POST['option_page'] === 'media') {
+            if (isset($_POST['thumbnail_crop'])) {
+                return (int) $_POST['thumbnail_crop'];
+            } else {
+                return 0; // チェックされていない場合は0
+            }
+        }
+        return $value; // 他のページからの更新はそのまま通す
     }
 
     public function add_quality_fields_script() {
@@ -363,6 +393,7 @@ class AndwImageControlSettings {
                     '<input type="number" name="andw_jpeg_quality_thumbnail" value="82" min="1" max="100" class="small-text" style="width: 70px; text-align: right; margin-bottom: 1rem;" />' +
                     '</div>' +
                     '<div>' +
+                    '<input type="hidden" name="thumbnail_crop" value="0" />' +
                     '<input type="checkbox" id="thumbnail_crop" name="thumbnail_crop" value="1" ' + (cropCheckbox.is(':checked') ? 'checked' : '') + ' /> ' +
                     '<label for="thumbnail_crop">' + cropLabel.text() + '</label>' +
                     '</div>' +
