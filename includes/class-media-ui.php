@@ -41,12 +41,12 @@ class AndwMediaUI {
         check_ajax_referer('andw_mime_type_nonce', 'nonce');
 
         if (!isset($_POST['attachment_id']) || empty($_POST['attachment_id'])) {
-            wp_die(__('無効な添付ファイルID', 'andw-image-control'));
+            wp_die(esc_html__('無効な添付ファイルID', 'andw-image-control'));
         }
 
         $attachment_id = intval($_POST['attachment_id']);
         if (!$attachment_id) {
-            wp_die(__('無効な添付ファイルID', 'andw-image-control'));
+            wp_die(esc_html__('無効な添付ファイルID', 'andw-image-control'));
         }
 
         $mime_type = get_post_mime_type($attachment_id);
