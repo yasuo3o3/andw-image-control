@@ -42,24 +42,30 @@ class AndwImageSizes {
 
 
     public function update_default_image_sizes() {
-        $thumbnail_size = get_option('andw_thumbnail_override_size', '');
-        $medium_size = get_option('andw_medium_override_size', '');
-        $large_size = get_option('andw_large_override_size', '');
+        // 設定保存時のみ実行
+        if (isset($_POST['option_page']) && $_POST['option_page'] === 'media') {
+            // nonce検証
+            check_admin_referer('media-options');
 
-        if ($thumbnail_size && isset($this->custom_sizes[$thumbnail_size])) {
-            update_option('thumbnail_size_w', $this->custom_sizes[$thumbnail_size]['width']);
-            update_option('thumbnail_size_h', $this->custom_sizes[$thumbnail_size]['height']);
-            update_option('thumbnail_crop', $this->custom_sizes[$thumbnail_size]['crop']);
-        }
+            $thumbnail_size = get_option('andw_thumbnail_override_size', '');
+            $medium_size = get_option('andw_medium_override_size', '');
+            $large_size = get_option('andw_large_override_size', '');
 
-        if ($medium_size && isset($this->custom_sizes[$medium_size])) {
-            update_option('medium_size_w', $this->custom_sizes[$medium_size]['width']);
-            update_option('medium_size_h', $this->custom_sizes[$medium_size]['height']);
-        }
+            if ($thumbnail_size && isset($this->custom_sizes[$thumbnail_size])) {
+                update_option('thumbnail_size_w', $this->custom_sizes[$thumbnail_size]['width']);
+                update_option('thumbnail_size_h', $this->custom_sizes[$thumbnail_size]['height']);
+                update_option('thumbnail_crop', $this->custom_sizes[$thumbnail_size]['crop']);
+            }
 
-        if ($large_size && isset($this->custom_sizes[$large_size])) {
-            update_option('large_size_w', $this->custom_sizes[$large_size]['width']);
-            update_option('large_size_h', $this->custom_sizes[$large_size]['height']);
+            if ($medium_size && isset($this->custom_sizes[$medium_size])) {
+                update_option('medium_size_w', $this->custom_sizes[$medium_size]['width']);
+                update_option('medium_size_h', $this->custom_sizes[$medium_size]['height']);
+            }
+
+            if ($large_size && isset($this->custom_sizes[$large_size])) {
+                update_option('large_size_w', $this->custom_sizes[$large_size]['width']);
+                update_option('large_size_h', $this->custom_sizes[$large_size]['height']);
+            }
         }
     }
 
