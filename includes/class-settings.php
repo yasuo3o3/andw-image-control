@@ -264,8 +264,7 @@ class AndwImageControlSettings {
     }
 
     private function get_custom_image_sizes() {
-        $image_sizes_instance = new AndwImageSizes();
-        return $image_sizes_instance->get_custom_sizes();
+        return AndwImageSizes::get_custom_sizes_static();
     }
 
     public function image_size_field_callback($args) {

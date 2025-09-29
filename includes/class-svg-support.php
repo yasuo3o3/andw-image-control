@@ -74,21 +74,186 @@ class AndwSvgSupport {
     }
 
     private function sanitize_svg_content($content) {
+        // WordPress推奨のwp_kses()を使用した安全なSVGサニタイズ
         $allowed_tags = array(
-            'svg', 'g', 'path', 'circle', 'ellipse', 'line', 'rect', 'polyline', 'polygon',
-            'text', 'tspan', 'defs', 'clipPath', 'mask', 'pattern', 'linearGradient',
-            'radialGradient', 'stop', 'use', 'symbol', 'marker', 'title', 'desc'
+            'svg' => array(
+                'class' => array(),
+                'id' => array(),
+                'width' => array(),
+                'height' => array(),
+                'viewbox' => array(),
+                'xmlns' => array(),
+                'xmlns:xlink' => array(),
+            ),
+            'g' => array(
+                'class' => array(),
+                'id' => array(),
+                'transform' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+            ),
+            'path' => array(
+                'class' => array(),
+                'id' => array(),
+                'd' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+                'transform' => array(),
+            ),
+            'circle' => array(
+                'class' => array(),
+                'id' => array(),
+                'cx' => array(),
+                'cy' => array(),
+                'r' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+            ),
+            'ellipse' => array(
+                'class' => array(),
+                'id' => array(),
+                'cx' => array(),
+                'cy' => array(),
+                'rx' => array(),
+                'ry' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+            ),
+            'line' => array(
+                'class' => array(),
+                'id' => array(),
+                'x1' => array(),
+                'y1' => array(),
+                'x2' => array(),
+                'y2' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+            ),
+            'rect' => array(
+                'class' => array(),
+                'id' => array(),
+                'x' => array(),
+                'y' => array(),
+                'width' => array(),
+                'height' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+            ),
+            'polyline' => array(
+                'class' => array(),
+                'id' => array(),
+                'points' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+            ),
+            'polygon' => array(
+                'class' => array(),
+                'id' => array(),
+                'points' => array(),
+                'fill' => array(),
+                'stroke' => array(),
+                'stroke-width' => array(),
+            ),
+            'text' => array(
+                'class' => array(),
+                'id' => array(),
+                'x' => array(),
+                'y' => array(),
+                'font-family' => array(),
+                'font-size' => array(),
+                'font-weight' => array(),
+                'text-anchor' => array(),
+                'fill' => array(),
+            ),
+            'tspan' => array(
+                'class' => array(),
+                'id' => array(),
+                'x' => array(),
+                'y' => array(),
+                'font-family' => array(),
+                'font-size' => array(),
+                'font-weight' => array(),
+                'text-anchor' => array(),
+                'fill' => array(),
+            ),
+            'defs' => array(
+                'class' => array(),
+                'id' => array(),
+            ),
+            'clippath' => array(
+                'class' => array(),
+                'id' => array(),
+            ),
+            'mask' => array(
+                'class' => array(),
+                'id' => array(),
+            ),
+            'pattern' => array(
+                'class' => array(),
+                'id' => array(),
+                'x' => array(),
+                'y' => array(),
+                'width' => array(),
+                'height' => array(),
+            ),
+            'lineargradient' => array(
+                'class' => array(),
+                'id' => array(),
+                'gradientunits' => array(),
+                'x1' => array(),
+                'y1' => array(),
+                'x2' => array(),
+                'y2' => array(),
+            ),
+            'radialgradient' => array(
+                'class' => array(),
+                'id' => array(),
+                'gradientunits' => array(),
+                'cx' => array(),
+                'cy' => array(),
+                'r' => array(),
+            ),
+            'stop' => array(
+                'class' => array(),
+                'id' => array(),
+                'offset' => array(),
+                'stop-color' => array(),
+                'stop-opacity' => array(),
+            ),
+            'use' => array(
+                'class' => array(),
+                'id' => array(),
+                'x' => array(),
+                'y' => array(),
+                'width' => array(),
+                'height' => array(),
+                'href' => array(),
+                'xlink:href' => array(),
+            ),
+            'symbol' => array(
+                'class' => array(),
+                'id' => array(),
+                'viewbox' => array(),
+            ),
+            'marker' => array(
+                'class' => array(),
+                'id' => array(),
+                'markerwidth' => array(),
+                'markerheight' => array(),
+                'refx' => array(),
+                'refy' => array(),
+                'orient' => array(),
+            ),
+            'title' => array(),
+            'desc' => array(),
         );
 
-        $allowed_attributes = array(
-            'id', 'class', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
-            'width', 'height', 'd', 'fill', 'stroke', 'stroke-width', 'stroke-linecap',
-            'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'opacity',
-            'fill-opacity', 'stroke-opacity', 'transform', 'viewBox', 'xmlns',
-            'xmlns:xlink', 'gradientUnits', 'offset', 'stop-color', 'stop-opacity',
-            'points', 'font-family', 'font-size', 'font-weight', 'text-anchor'
-        );
-
+        // 危険なパターンのチェック（追加の安全策）
         $dangerous_patterns = array(
             '/<script[^>]*?>.*?<\/script>/is',
             '/on\w+\s*=/i',
@@ -99,6 +264,8 @@ class AndwSvgSupport {
             '/<embed[^>]*?>/is',
             '/<link[^>]*?>/is',
             '/<meta[^>]*?>/is',
+            '/<!ENTITY/i',
+            '/<!DOCTYPE[^>]*\[/i',
         );
 
         foreach ($dangerous_patterns as $pattern) {
@@ -107,59 +274,17 @@ class AndwSvgSupport {
             }
         }
 
-        $dom = new DOMDocument();
-        $dom->formatOutput = false;
-        $dom->preserveWhiteSpace = true;
+        // WordPress標準のwp_kses()を使用した安全なHTML/XMLサニタイズ
+        $sanitized_content = wp_kses($content, $allowed_tags);
 
-        // XXE攻撃防止のための設定
-        libxml_use_internal_errors(true);
-        $previous_libxml_disable_entity_loader = libxml_disable_entity_loader(true);
-
-        $loaded = $dom->loadXML($content, LIBXML_NONET | LIBXML_NOBLANKS | LIBXML_NOENT);
-
-        // 設定を元に戻す
-        libxml_disable_entity_loader($previous_libxml_disable_entity_loader);
-        libxml_clear_errors();
-
-        if (!$loaded) {
+        // 追加の検証：正しいXMLフォーマットかチェック
+        if (empty($sanitized_content) || strpos($sanitized_content, '<svg') === false) {
             return false;
         }
 
-        $this->sanitize_dom_node($dom->documentElement, $allowed_tags, $allowed_attributes);
-
-        return $dom->saveXML();
+        return $sanitized_content;
     }
 
-    private function sanitize_dom_node($node, $allowed_tags, $allowed_attributes) {
-        if ($node->nodeType !== XML_ELEMENT_NODE) {
-            return;
-        }
-
-        if (!in_array(strtolower($node->nodeName), $allowed_tags)) {
-            $node->parentNode->removeChild($node);
-            return;
-        }
-
-        $attributes_to_remove = array();
-        foreach ($node->attributes as $attribute) {
-            if (!in_array(strtolower($attribute->name), $allowed_attributes)) {
-                $attributes_to_remove[] = $attribute->name;
-            }
-        }
-
-        foreach ($attributes_to_remove as $attr_name) {
-            $node->removeAttribute($attr_name);
-        }
-
-        $children_to_process = array();
-        foreach ($node->childNodes as $child) {
-            $children_to_process[] = $child;
-        }
-
-        foreach ($children_to_process as $child) {
-            $this->sanitize_dom_node($child, $allowed_tags, $allowed_attributes);
-        }
-    }
 
     public function fix_svg_display() {
         echo '<style type="text/css">
