@@ -107,9 +107,17 @@ class AndwImageControlSettings {
             } else {
                 // 標準サイズの品質設定は標準セクションで処理するためここでは除外
                 if (!in_array($size_name, array('thumbnail', 'medium', 'large', 'full'))) {
+                    // 特定サイズのラベルを変更
+                    $custom_label = $size_label;
+                    if ($size_name === '2048x2048') {
+                        $custom_label = __('標準非表示設定2048の品質', 'andw-image-control');
+                    } elseif ($size_name === '1536x1536') {
+                        $custom_label = __('標準非表示設定1536の品質', 'andw-image-control');
+                    }
+
                     add_settings_field(
                         'andw_jpeg_quality_' . $size_name,
-                        sprintf(__('%s JPEG品質', 'andw-image-control'), $size_label),
+                        $custom_label,
                         array($this, 'quality_field_callback'),
                         'media',
                         'andw_image_control_section',
