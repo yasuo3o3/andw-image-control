@@ -40,6 +40,10 @@ class AndwMediaUI {
     public function ajax_get_mime_type() {
         check_ajax_referer('andw_mime_type_nonce', 'nonce');
 
+        if (!isset($_POST['attachment_id']) || empty($_POST['attachment_id'])) {
+            wp_die(__('無効な添付ファイルID', 'andw-image-control'));
+        }
+
         $attachment_id = intval($_POST['attachment_id']);
         if (!$attachment_id) {
             wp_die(__('無効な添付ファイルID', 'andw-image-control'));
