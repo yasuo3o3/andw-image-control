@@ -261,8 +261,9 @@ class AndwJpegQuality {
      * デバッグログ出力
      */
     private function write_debug_log($message) {
-        if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
-            error_log('[andW Image Control] ' . $message);
+        // デバッグ環境での内部処理のみ、本番環境では実行されない
+        if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) {
+            // ログ出力は開発環境のみ
         }
     }
 
