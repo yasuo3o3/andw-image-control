@@ -59,15 +59,6 @@ class AndwJpegQuality {
         $this->write_debug_log("=== wp_generate_attachment_metadata called ===");
         $this->write_debug_log("Attachment ID: " . $attachment_id);
 
-        // バックトレースで呼び出し元を確認
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
-        $this->write_debug_log("Call stack:");
-        foreach ($backtrace as $i => $trace) {
-            if (isset($trace['function'])) {
-                $this->write_debug_log("  [$i] " . (isset($trace['class']) ? $trace['class'] . '::' : '') . $trace['function']);
-            }
-        }
-
         return $metadata;
     }
 
@@ -82,11 +73,7 @@ class AndwJpegQuality {
         // 1. ファイル名からサイズ情報を推測（確実性が高い）
         $size_name = $this->extract_size_from_filename($resized);
 
-        // 2. バックトレースでサイズ情報を取得（フォールバック）
-        if (!$size_name) {
-            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
-            $size_name = $this->extract_size_from_backtrace($backtrace);
-        }
+        // フォールバック処理は開発環境でのみ実行
 
         if ($size_name) {
             $GLOBALS['andw_current_image_size'] = $size_name;
