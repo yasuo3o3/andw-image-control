@@ -2,7 +2,7 @@
 /**
  * Plugin Name: andW Media Control
  * Description: 画像品質のカスタマイズ、PNG→JPEG自動変換、独自画像サイズ管理、SVG対応、メディアライブラリUI拡張を提供します。
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: Netservice
  * Author URI: https://netservice.jp/
  * License: GPLv2 or later
