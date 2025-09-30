@@ -44,12 +44,16 @@ foreach ($standard_sizes as $size) {
     delete_option('andw_jpeg_quality_' . $size);
 }
 
-// その他の andw_ プレフィックスオプションを一括削除（将来の拡張対応）
+// その他の andw_ プレフィックスオプションを安全に削除（将来の拡張対応）
 global $wpdb;
-$wpdb->query($wpdb->prepare(
-    "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+$unknown_options = $wpdb->get_col($wpdb->prepare(
+    "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
     'andw\_%'
 ));
+
+foreach ($unknown_options as $option_name) {
+    delete_option($option_name);
+}
 
 // トランジェントキャッシュの削除（存在する場合）
 delete_transient('andw_image_sizes_cache');
