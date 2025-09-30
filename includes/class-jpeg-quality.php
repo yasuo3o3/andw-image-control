@@ -32,6 +32,16 @@ class AndwJpegQuality {
         if ($current_size) {
             $quality_option = get_option('andw_jpeg_quality_' . $current_size);
             $this->write_debug_log("Quality option for {$current_size}: " . ($quality_option ?: 'not set'));
+
+            // 全サイズのオプション値を確認（デバッグ用）
+            $all_sizes = ['thumbnail', 'medium', 'large', 'thumb-sm', 'thumb-md', 'thumb-lg', 'content-sm', 'content-md', 'content-lg', 'hero-md', 'hero-lg'];
+            $this->write_debug_log("=== All quality options check ===");
+            foreach ($all_sizes as $size) {
+                $option_value = get_option('andw_jpeg_quality_' . $size);
+                $this->write_debug_log("andw_jpeg_quality_{$size}: " . ($option_value ?: 'not set'));
+            }
+            $this->write_debug_log("=== End all quality options ===");
+
             if ($quality_option && is_numeric($quality_option)) {
                 $this->write_debug_log("Applied quality: " . intval($quality_option));
                 return intval($quality_option);
