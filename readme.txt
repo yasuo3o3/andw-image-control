@@ -1,6 +1,6 @@
 === andW Media Control ===
 Contributors: netservicejp
-Tags: media, jpeg, png, svg, image-quality, image-compression, media-library, custom-image-sizes
+Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
