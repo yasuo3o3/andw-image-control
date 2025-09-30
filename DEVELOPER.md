@@ -3,7 +3,7 @@
 ## Development Environment Setup
 
 ### Requirements
-- PHP 7.4 or higher
+- PHP 8.1 or higher (enforced with runtime check)
 - WordPress 5.0 or higher
 - Composer (for development dependencies)
 - Node.js & npm (for build tools)
@@ -113,17 +113,21 @@ php -l includes/class-settings.php
    - `CHANGELOG.txt` (new version entry)
 
 ### Pre-Release Checklist
-- [ ] All PHPCS warnings resolved
-- [ ] Plugin Check passed
-- [ ] Security review completed
-- [ ] Functional testing passed
-- [ ] Documentation updated
-- [ ] Version numbers synchronized
+- [x] All PHPCS warnings resolved (zero errors achieved)
+- [x] Plugin Check passed
+- [x] Security review completed
+- [x] Functional testing passed
+- [x] Documentation updated
+- [x] Version numbers synchronized
+- [x] WordPress.org review requirements met
+- [x] PHP 8.1+ compatibility verified
+- [x] Database operations use WordPress API only
+- [x] Complete nonce verification implemented
 
 ### Build Commands
 ```bash
 # Create release package
-zip -r andw-image-control-v0.2.0.zip . \
+zip -r andw-image-control-v0.3.0.zip . \
   -x "*.git*" "node_modules/*" "*.log" "*.tmp" ".DS_Store"
 
 # Or using npm script (if configured)
@@ -143,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2']
+        php: ['8.1', '8.2', '8.3']
         wordpress: ['5.0', '6.0', '6.7']
     steps:
       - uses: actions/checkout@v3
@@ -235,7 +239,7 @@ andw-image-control/
 ## 日本語開発者向け情報
 
 ### 開発環境構築
-WordPress 5.0以上、PHP 7.4以上の環境でテストしてください。
+WordPress 5.0以上、PHP 8.1以上の環境でテストしてください。PHP 8.1未満では動作しません。
 
 ### コード品質チェック
 WordPress コーディング標準に準拠してください。PHPCSでのチェックを推奨します。

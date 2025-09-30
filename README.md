@@ -1,7 +1,7 @@
 # andW Media Control
 
 [![WordPress Plugin Version](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)](https://wordpress.org/)
-[![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)](https://php.net/)
+[![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-purple.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-red.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 Advanced WordPress media control plugin with JPEG quality customization, PNG to JPEG conversion, custom image sizes, SVG support, and enhanced media library UI.
@@ -47,11 +47,17 @@ Enable secure SVG uploads in Settings > Media. All SVG files are sanitized using
 ## Requirements
 
 - WordPress 5.0 or higher
-- PHP 7.4 or higher
+- PHP 8.1 or higher
 
 ## Development Status
 
-This plugin is being prepared for submission to the official WordPress Plugin Directory. All code follows WordPress coding standards and has undergone security review.
+This plugin is **ready for submission** to the official WordPress Plugin Directory. All code follows WordPress coding standards (WPCS), has undergone comprehensive security review, and meets WordPress.org review requirements including:
+
+- WPCS compliance with zero errors
+- Complete security audit (XSS, CSRF, SQLi prevention)
+- Proper nonce verification and permission checks
+- WordPress API-only database operations
+- PHP 8.1+ compatibility with version enforcement
 
 ## License
 

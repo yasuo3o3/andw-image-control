@@ -2,7 +2,7 @@
 Contributors: netservicejp
 Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.7
 Requires PHP: 8.1
 Stable tag: 0.3.0
 License: GPLv2 or later
@@ -71,6 +71,16 @@ The plugin is optimized for performance and only processes images during upload.
 透過は保持されず、白背景で塗りつぶされます。元のPNGファイルも保持されます。
 
 == Changelog ==
+
+= 0.3.0 =
+* **Critical**: Fixed WordPress.DB.DirectDatabaseQuery violations in uninstall.php (replaced with WordPress API)
+* **Major**: Enhanced AJAX security with upload_files permission checks
+* **Major**: Improved CSS/JS versioning with filemtime-based cache control
+* **Changed**: WordPress.org review compliance completed
+* **Changed**: PHP 8.1 requirement enforcement with version check
+* **Fixed**: Autoload optimization for non-critical options to improve performance
+* **Security**: Complete nonce verification and permission check implementation
+* **Security**: WordPress.Security.EscapeOutput compliance strengthened
 
 = 0.2.0 =
 * **Security**: Fixed libxml_disable_entity_loader() deprecation and LIBXML_NOENT DoS vulnerability in SVG processing

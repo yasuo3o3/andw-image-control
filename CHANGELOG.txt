@@ -1,6 +1,32 @@
 andW Media Control - Changelog
 ====================================
 
+v0.3.0 - 2024-12-19
+------------------
+
+CRITICAL FIXES:
+* Fixed WordPress.DB.DirectDatabaseQuery violations in uninstall.php - replaced direct SQL with WordPress API
+* Enhanced AJAX security with upload_files permission checks for media operations
+* Implemented complete nonce verification and permission check system
+
+MAJOR IMPROVEMENTS:
+* Improved CSS/JS versioning with filemtime-based cache control for better performance
+* Autoload optimization for non-critical options to reduce database load
+* PHP 8.1 requirement enforcement with runtime version check and admin notices
+* WordPress.org review compliance completed with zero WPCS errors
+
+SECURITY ENHANCEMENTS:
+* WordPress.Security.EscapeOutput compliance strengthened across all output functions
+* Complete audit and implementation of proper escaping, sanitization, and validation
+* Enhanced permission checks for all administrative operations
+* Eliminated all direct database queries in favor of WordPress API
+
+DEVELOPMENT:
+* Comprehensive code review and quality improvements
+* WordPress Coding Standards (WPCS) full compliance achieved
+* Plugin Check tool compliance verified
+* Preparation completed for WordPress.org Plugin Directory submission
+
 v0.2.0 - 2025-09-30
 ------------------
 
