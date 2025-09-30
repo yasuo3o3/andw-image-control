@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2024-12-19
+
+### Changed
+- レビューと修正対応による品質向上
+- WordPress.org審査基準準拠を完了
+- PHP 8.1要件明記とバージョンチェック追加
+- AJAX セキュリティ強化（upload_files権限チェック追加）
+
+### Fixed
+- uninstall.php でのWordPress DB直接クエリ修正（WordPress API使用に変更）
+- autoload最適化により低頻度オプションのパフォーマンス改善
+- CSS/JSバージョニング改善（filemtime使用でキャッシュ制御強化）
+
+### Security
+- WordPress.DB.DirectDatabaseQuery 警告解消
+- WordPress.Security.EscapeOutput 強化
+- nonce検証と権限チェックの完全実装
+
 ## [0.2.0] - 2025-09-30
 
 ### Security
