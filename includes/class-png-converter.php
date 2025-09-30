@@ -72,7 +72,10 @@ class AndwPngConverter {
         imagecopy($jpeg_image, $png_image, 0, 0, 0, 0, $width, $height);
 
         $path_info = pathinfo($png_file);
-        $jpeg_file = $path_info['dirname'] . '/' . $path_info['filename'] . '.jpg';
+
+        // 既存ファイルとの衝突を回避
+        $jpeg_file = wp_unique_filename($path_info['dirname'], $path_info['filename'] . '.jpg');
+        $jpeg_file = $path_info['dirname'] . '/' . $jpeg_file;
 
         $quality = get_option('andw_png_to_jpeg_quality', 85);
         $success = imagejpeg($jpeg_image, $jpeg_file, intval($quality));

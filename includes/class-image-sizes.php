@@ -49,8 +49,12 @@ class AndwImageSizes {
     public function update_default_image_sizes() {
         // 設定保存時のみ実行
         if (isset($_POST['option_page']) && $_POST['option_page'] === 'media') {
-            // nonce検証
+            // nonce検証と権限チェック
             check_admin_referer('media-options');
+
+            if (!current_user_can('manage_options')) {
+                wp_die(__('You do not have sufficient permissions to access this page.'));
+            }
 
             $thumbnail_size = get_option('andw_thumbnail_override_size', '');
             $medium_size = get_option('andw_medium_override_size', '');

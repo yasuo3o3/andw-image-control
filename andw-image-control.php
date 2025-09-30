@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('ANDW_IMAGE_CONTROL_VERSION', '0.2.0');
+define('ANDW_IMAGE_CONTROL_VERSION', '0.2.1');
 define('ANDW_IMAGE_CONTROL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ANDW_IMAGE_CONTROL_PLUGIN_URL', plugin_dir_url(__FILE__));
 

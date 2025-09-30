@@ -348,8 +348,12 @@ class AndwImageControlSettings {
     public function handle_thumbnail_crop_option($value, $old_value, $option) {
         // メディア設定ページでの保存時のみ処理
         if (isset($_POST['option_page']) && $_POST['option_page'] === 'media') {
-            // nonce検証
+            // nonce検証と権限チェック
             check_admin_referer('media-options');
+
+            if (!current_user_can('manage_options')) {
+                wp_die(__('You do not have sufficient permissions to access this page.'));
+            }
 
             // チェックボックスがチェックされている場合は1、されていない場合は0
             return isset($_POST['thumbnail_crop']) ? 1 : 0;
