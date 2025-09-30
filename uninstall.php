@@ -45,14 +45,11 @@ foreach ($standard_sizes as $size) {
 }
 
 // その他の andw_ プレフィックスオプションを安全に削除（将来の拡張対応）
-global $wpdb;
-$unknown_options = $wpdb->get_col($wpdb->prepare(
-    "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
-    'andw\_%'
-));
-
-foreach ($unknown_options as $option_name) {
-    delete_option($option_name);
+$all_options = wp_load_alloptions();
+foreach ($all_options as $option_name => $option_value) {
+    if (strpos($option_name, 'andw_') === 0) {
+        delete_option($option_name);
+    }
 }
 
 // トランジェントキャッシュの削除（存在する場合）
