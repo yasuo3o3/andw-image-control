@@ -148,7 +148,7 @@ jobs:
     strategy:
       matrix:
         php: ['8.1', '8.2', '8.3']
-        wordpress: ['5.0', '6.0', '6.7']
+        wordpress: ['5.0', '6.0', '6.8']
     steps:
       - uses: actions/checkout@v3
       - name: Setup PHP
