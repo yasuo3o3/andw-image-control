@@ -138,7 +138,9 @@ class AndwJpegQuality {
             $this->write_debug_log("Extracted dimensions from filename: {$width}x{$height}");
 
             // サイズ情報から対応するサイズ名を特定
+            $this->write_debug_log("Calling determine_size_name with: {$width}x{$height}");
             $size_name = $this->determine_size_name(array('width' => $width, 'height' => $height));
+            $this->write_debug_log("determine_size_name returned: " . ($size_name ?: 'null'));
             if ($size_name) {
                 $this->write_debug_log("Matched size name from filename: " . $size_name);
                 return $size_name;
