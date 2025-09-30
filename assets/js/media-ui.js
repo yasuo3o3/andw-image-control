@@ -44,8 +44,8 @@ jQuery(document).ready(function($) {
             }
         });
 
-        // Collect attachment IDs from media list table
-        $('.wp-list-table .media-icon').each(function() {
+        // Collect attachment IDs from media list table (improved selectors)
+        $('.wp-list-table .media-icon, .wp-list-table .column-title .media-icon').each(function() {
             var $mediaIcon = $(this);
             if ($mediaIcon.find('.andw-mime-label').length > 0) {
                 return;
@@ -58,6 +58,46 @@ jQuery(document).ready(function($) {
             var matches = href.match(/post=(\d+)/);
             if (matches) {
                 var attachmentId = parseInt(matches[1]);
+                attachmentIds.push(attachmentId);
+                $elementsToProcess.push({
+                    id: attachmentId,
+                    element: $mediaIcon,
+                    type: 'list'
+                });
+            }
+        });
+
+        // Additional check for list view table rows
+        $('.wp-list-table .type-attachment').each(function() {
+            var $row = $(this);
+            var $mediaIcon = $row.find('.media-icon');
+            if (!$mediaIcon.length || $mediaIcon.find('.andw-mime-label').length > 0) {
+                return;
+            }
+
+            // Try to get attachment ID from row id
+            var rowId = $row.attr('id');
+            var attachmentId = null;
+            if (rowId) {
+                var matches = rowId.match(/post-(\d+)/);
+                if (matches) {
+                    attachmentId = parseInt(matches[1]);
+                }
+            }
+
+            // Fallback to link method
+            if (!attachmentId) {
+                var $link = $mediaIcon.find('a');
+                if ($link.length) {
+                    var href = $link.attr('href');
+                    var matches = href.match(/post=(\d+)/);
+                    if (matches) {
+                        attachmentId = parseInt(matches[1]);
+                    }
+                }
+            }
+
+            if (attachmentId) {
                 attachmentIds.push(attachmentId);
                 $elementsToProcess.push({
                     id: attachmentId,

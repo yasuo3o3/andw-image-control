@@ -44,10 +44,32 @@
     position: absolute;
 }
 
-.wp-list-table .column-title .media-icon {
+.wp-list-table .column-title .media-icon,
+.wp-list-table .media-icon {
     position: relative;
 }
 
 .media-frame .attachment {
     position: relative;
+}
+
+/* List view specific positioning */
+.wp-list-table .media-icon .andw-mime-label {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 9px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    z-index: 10;
+}
+
+/* Ensure proper stacking in list view */
+.wp-list-table .column-title {
+    position: relative;
+}
+
+.wp-list-table .type-attachment .media-icon {
+    position: relative;
+    display: inline-block;
 }
