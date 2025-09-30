@@ -13,6 +13,16 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// PHP 8.1以上が必要
+if (version_compare(PHP_VERSION, '8.1', '<')) {
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-error"><p>';
+        echo esc_html__('andW Media Control プラグインはPHP 8.1以上が必要です。現在のバージョン: ', 'andw-image-control') . PHP_VERSION;
+        echo '</p></div>';
+    });
+    return;
+}
+
 define('ANDW_IMAGE_CONTROL_VERSION', '0.2.1');
 define('ANDW_IMAGE_CONTROL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ANDW_IMAGE_CONTROL_PLUGIN_URL', plugin_dir_url(__FILE__));

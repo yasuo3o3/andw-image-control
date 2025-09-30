@@ -18,18 +18,25 @@ class AndwMediaUI {
             return;
         }
 
+        // ファイル更新時間を使ったキャッシュ制御
+        $css_file = ANDW_IMAGE_CONTROL_PLUGIN_DIR . 'assets/css/media-ui.css';
+        $js_file = ANDW_IMAGE_CONTROL_PLUGIN_DIR . 'assets/js/media-ui.js';
+
+        $css_version = file_exists($css_file) ? filemtime($css_file) : ANDW_IMAGE_CONTROL_VERSION;
+        $js_version = file_exists($js_file) ? filemtime($js_file) : ANDW_IMAGE_CONTROL_VERSION;
+
         wp_enqueue_style(
             'andw-media-ui',
             ANDW_IMAGE_CONTROL_PLUGIN_URL . 'assets/css/media-ui.css',
             array(),
-            ANDW_IMAGE_CONTROL_VERSION
+            $css_version
         );
 
         wp_enqueue_script(
             'andw-media-ui',
             ANDW_IMAGE_CONTROL_PLUGIN_URL . 'assets/js/media-ui.js',
             array('jquery'),
-            ANDW_IMAGE_CONTROL_VERSION,
+            $js_version,
             true
         );
 
@@ -41,6 +48,10 @@ class AndwMediaUI {
 
     public function ajax_get_mime_type() {
         check_ajax_referer('andw_mime_type_nonce', 'nonce');
+
+        if (!current_user_can('upload_files')) {
+            wp_die(esc_html__('ファイル操作の権限がありません', 'andw-image-control'));
+        }
 
         if (!isset($_POST['attachment_id']) || empty($_POST['attachment_id'])) {
             wp_die(esc_html__('無効な添付ファイルID', 'andw-image-control'));
@@ -62,6 +73,10 @@ class AndwMediaUI {
 
     public function ajax_get_mime_types_batch() {
         check_ajax_referer('andw_mime_type_nonce', 'nonce');
+
+        if (!current_user_can('upload_files')) {
+            wp_die(esc_html__('ファイル操作の権限がありません', 'andw-image-control'));
+        }
 
         if (!isset($_POST['attachment_ids']) || !is_array($_POST['attachment_ids'])) {
             wp_die(esc_html__('無効な添付ファイルID配列', 'andw-image-control'));

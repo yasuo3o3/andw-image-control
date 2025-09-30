@@ -13,6 +13,9 @@ class AndwImageControlSettings {
     }
 
     public function register_settings() {
+        // パフォーマンス最適化: 頻繁に使われないオプションのautoload無効化
+        $this->ensure_autoload_optimization();
+
         register_setting('media', 'andw_jpeg_quality_default', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
@@ -342,6 +345,26 @@ class AndwImageControlSettings {
 
         // WordPressの標準フィールドの後に品質フィールドを追加するスクリプトを追加
         add_action('admin_footer-options-media.php', array($this, 'add_quality_fields_script'));
+    }
+
+    /**
+     * autoload最適化: 頻繁に使用されないオプションのautoload無効化
+     */
+    private function ensure_autoload_optimization() {
+        $non_autoload_options = array(
+            'andw_png_to_jpeg_quality',  // PNG変換品質（変換機能使用時のみ）
+            'andw_svg_sanitize',         // SVGサニタイズ（SVG使用時のみ）
+            'andw_enable_svg_upload',    // SVG有効化（管理者設定時のみ）
+        );
+
+        foreach ($non_autoload_options as $option_name) {
+            // 既存オプションのautoloadを無効化（存在する場合のみ）
+            if (get_option($option_name) !== false) {
+                $value = get_option($option_name);
+                delete_option($option_name);
+                add_option($option_name, $value, '', 'no');
+            }
+        }
     }
 
 
