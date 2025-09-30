@@ -1,5 +1,13 @@
 jQuery(document).ready(function($) {
 
+    // Debug: Global access for testing
+    window.andwDebug = {
+        addMimeTypeLabels: addMimeTypeLabels,
+        $: $
+    };
+
+    console.log('andW Media UI: Plugin loaded');
+
     function addMimeTypeLabelsFromJS() {
         // Option B: Use pre-embedded data from wp_prepare_attachment_for_js
         if (typeof wp !== 'undefined' && wp.media && wp.media.frame) {
@@ -24,6 +32,7 @@ jQuery(document).ready(function($) {
 
     function addMimeTypeLabelsFromBackend() {
         // Option A: Batch processing for media list table and other cases
+        console.log('addMimeTypeLabelsFromBackend called');
         var attachmentIds = [];
         var $elementsToProcess = [];
 
@@ -146,6 +155,11 @@ jQuery(document).ready(function($) {
     }
 
     function addMimeTypeLabels() {
+        console.log('addMimeTypeLabels called');
+        console.log('List tables found:', $('.wp-list-table').length);
+        console.log('Media icons found:', $('.wp-list-table .media-icon').length);
+        console.log('Attachment rows found:', $('.wp-list-table .type-attachment').length);
+
         // Try Option B first (pre-embedded data), fallback to Option A (batch AJAX)
         addMimeTypeLabelsFromJS();
         setTimeout(addMimeTypeLabelsFromBackend, 100);
