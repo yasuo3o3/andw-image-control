@@ -163,25 +163,41 @@ class AndwJpegQuality {
         $width = $size['width'];
         $height = $size['height'];
 
-        // 標準サイズとの照合
-        if ($width == get_option('thumbnail_size_w') && $height == get_option('thumbnail_size_h')) {
+        $this->write_debug_log("Trying to match size: {$width}x{$height}");
+
+        // 標準サイズとの照合（高さ0の場合は幅のみ照合）
+        $thumb_w = get_option('thumbnail_size_w');
+        $thumb_h = get_option('thumbnail_size_h');
+        if ($width == $thumb_w && $height == $thumb_h) {
+            $this->write_debug_log("Matched thumbnail: {$thumb_w}x{$thumb_h}");
             return 'thumbnail';
         }
-        if ($width == get_option('medium_size_w') && $height == get_option('medium_size_h')) {
+
+        $medium_w = get_option('medium_size_w');
+        $medium_h = get_option('medium_size_h');
+        if ($width == $medium_w && ($medium_h == 0 || $height == $medium_h)) {
+            $this->write_debug_log("Matched medium: {$medium_w}x{$medium_h}");
             return 'medium';
         }
-        if ($width == get_option('large_size_w') && $height == get_option('large_size_h')) {
+
+        $large_w = get_option('large_size_w');
+        $large_h = get_option('large_size_h');
+        if ($width == $large_w && ($large_h == 0 || $height == $large_h)) {
+            $this->write_debug_log("Matched large: {$large_w}x{$large_h}");
             return 'large';
         }
 
-        // カスタムサイズとの照合
+        // カスタムサイズとの照合（高さ0の場合は幅のみ照合）
         $additional_sizes = wp_get_additional_image_sizes();
         foreach ($additional_sizes as $name => $data) {
-            if ($width == $data['width'] && $height == $data['height']) {
+            $this->write_debug_log("Checking custom size {$name}: {$data['width']}x{$data['height']}");
+            if ($width == $data['width'] && ($data['height'] == 0 || $height == $data['height'])) {
+                $this->write_debug_log("Matched custom size: {$name}");
                 return $name;
             }
         }
 
+        $this->write_debug_log("No size match found for {$width}x{$height}");
         return null;
     }
 
