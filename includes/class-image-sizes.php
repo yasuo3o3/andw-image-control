@@ -53,7 +53,7 @@ class AndwImageSizes {
             check_admin_referer('media-options');
 
             if (!current_user_can('manage_options')) {
-                wp_die(__('You do not have sufficient permissions to access this page.'));
+                wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'andw-image-control'));
             }
 
             $thumbnail_size = get_option('andw_thumbnail_override_size', '');
