@@ -9,6 +9,8 @@ class AndwMediaUI {
     public function __construct() {
         add_action('admin_enqueue_scripts', array($this, 'enqueue_media_scripts'));
         add_action('wp_ajax_andw_get_mime_type', array($this, 'ajax_get_mime_type'));
+        add_action('wp_ajax_andw_get_mime_types_batch', array($this, 'ajax_get_mime_types_batch'));
+        add_filter('wp_prepare_attachment_for_js', array($this, 'add_mime_type_to_js'), 10, 3);
     }
 
     public function enqueue_media_scripts($hook) {
@@ -56,6 +58,40 @@ class AndwMediaUI {
             'label' => $label,
             'class' => $this->get_mime_type_class($mime_type),
         ));
+    }
+
+    public function ajax_get_mime_types_batch() {
+        check_ajax_referer('andw_mime_type_nonce', 'nonce');
+
+        if (!isset($_POST['attachment_ids']) || !is_array($_POST['attachment_ids'])) {
+            wp_die(esc_html__('無効な添付ファイルID配列', 'andw-image-control'));
+        }
+
+        $attachment_ids = array_map('intval', $_POST['attachment_ids']);
+        $attachment_ids = array_filter($attachment_ids);
+
+        if (empty($attachment_ids)) {
+            wp_die(esc_html__('無効な添付ファイルID配列', 'andw-image-control'));
+        }
+
+        $results = array();
+        foreach ($attachment_ids as $attachment_id) {
+            $mime_type = get_post_mime_type($attachment_id);
+            $results[$attachment_id] = array(
+                'label' => $this->get_mime_type_label($mime_type),
+                'class' => $this->get_mime_type_class($mime_type),
+            );
+        }
+
+        wp_send_json_success($results);
+    }
+
+    public function add_mime_type_to_js($response, $attachment, $meta) {
+        if (isset($attachment->post_mime_type)) {
+            $response['andw_mime_label'] = $this->get_mime_type_label($attachment->post_mime_type);
+            $response['andw_mime_class'] = $this->get_mime_type_class($attachment->post_mime_type);
+        }
+        return $response;
     }
 
     private function get_mime_type_label($mime_type) {

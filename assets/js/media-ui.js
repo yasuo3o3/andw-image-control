@@ -1,74 +1,114 @@
 jQuery(document).ready(function($) {
 
-    function addMimeTypeLabels() {
+    function addMimeTypeLabelsFromJS() {
+        // Option B: Use pre-embedded data from wp_prepare_attachment_for_js
+        if (typeof wp !== 'undefined' && wp.media && wp.media.frame) {
+            var attachments = wp.media.frame.state().get('selection') || wp.media.frame.content.get().collection;
+            if (attachments && attachments.models) {
+                attachments.models.forEach(function(model) {
+                    var attachment = model.attributes;
+                    if (attachment.andw_mime_label && attachment.andw_mime_class) {
+                        var $attachment = $('.attachment[data-id="' + attachment.id + '"]');
+                        if ($attachment.length && !$attachment.find('.andw-mime-label').length) {
+                            var $label = $('<div class="andw-mime-label ' + attachment.andw_mime_class + '">' + attachment.andw_mime_label + '</div>');
+                            var $thumbnail = $attachment.find('.thumbnail').first();
+                            if ($thumbnail.length) {
+                                $thumbnail.append($label);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function addMimeTypeLabelsFromBackend() {
+        // Option A: Batch processing for media list table and other cases
+        var attachmentIds = [];
+        var $elementsToProcess = [];
+
+        // Collect attachment IDs from media modal
         $('.attachment').each(function() {
             var $attachment = $(this);
-
             if ($attachment.find('.andw-mime-label').length > 0) {
                 return;
             }
-
             var attachmentId = $attachment.data('id');
-            if (!attachmentId) {
-                return;
+            if (attachmentId) {
+                attachmentIds.push(attachmentId);
+                $elementsToProcess.push({
+                    id: attachmentId,
+                    element: $attachment,
+                    type: 'modal'
+                });
             }
-
-            $.ajax({
-                url: andwMediaUI.ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'andw_get_mime_type',
-                    attachment_id: attachmentId,
-                    nonce: andwMediaUI.nonce
-                },
-                success: function(response) {
-                    if (response.success) {
-                        var $label = $('<div class="andw-mime-label ' + response.data.class + '">' + response.data.label + '</div>');
-                        var $thumbnail = $attachment.find('.thumbnail').first();
-                        if ($thumbnail.length) {
-                            $thumbnail.append($label);
-                        }
-                    }
-                }
-            });
         });
 
+        // Collect attachment IDs from media list table
         $('.wp-list-table .media-icon').each(function() {
             var $mediaIcon = $(this);
-
             if ($mediaIcon.find('.andw-mime-label').length > 0) {
                 return;
             }
-
             var $link = $mediaIcon.find('a');
             if (!$link.length) {
                 return;
             }
-
             var href = $link.attr('href');
             var matches = href.match(/post=(\d+)/);
-            if (!matches) {
-                return;
+            if (matches) {
+                var attachmentId = parseInt(matches[1]);
+                attachmentIds.push(attachmentId);
+                $elementsToProcess.push({
+                    id: attachmentId,
+                    element: $mediaIcon,
+                    type: 'list'
+                });
             }
-
-            var attachmentId = matches[1];
-
-            $.ajax({
-                url: andwMediaUI.ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'andw_get_mime_type',
-                    attachment_id: attachmentId,
-                    nonce: andwMediaUI.nonce
-                },
-                success: function(response) {
-                    if (response.success) {
-                        var $label = $('<div class="andw-mime-label ' + response.data.class + '">' + response.data.label + '</div>');
-                        $mediaIcon.css('position', 'relative').append($label);
-                    }
-                }
-            });
         });
+
+        // Remove duplicates
+        attachmentIds = [...new Set(attachmentIds)];
+
+        if (attachmentIds.length === 0) {
+            return;
+        }
+
+        // Single batch AJAX request
+        $.ajax({
+            url: andwMediaUI.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'andw_get_mime_types_batch',
+                attachment_ids: attachmentIds,
+                nonce: andwMediaUI.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    $elementsToProcess.forEach(function(item) {
+                        var mimeData = response.data[item.id];
+                        if (mimeData) {
+                            var $label = $('<div class="andw-mime-label ' + mimeData.class + '">' + mimeData.label + '</div>');
+
+                            if (item.type === 'modal') {
+                                var $thumbnail = item.element.find('.thumbnail').first();
+                                if ($thumbnail.length) {
+                                    $thumbnail.append($label);
+                                }
+                            } else if (item.type === 'list') {
+                                item.element.css('position', 'relative').append($label);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function addMimeTypeLabels() {
+        // Try Option B first (pre-embedded data), fallback to Option A (batch AJAX)
+        addMimeTypeLabelsFromJS();
+        setTimeout(addMimeTypeLabelsFromBackend, 100);
     }
 
     addMimeTypeLabels();
@@ -99,42 +139,35 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // WordPress Media Library のイベントフック
+    // WordPress Media Library のイベントフック（最適化版）
     if (typeof wp !== 'undefined' && wp.media) {
         // メディアフレームが開かれた時
         $(document).on('wp-media-frame-open', function() {
-            setTimeout(addMimeTypeLabels, 300);
+            setTimeout(addMimeTypeLabels, 50);
         });
 
         // メディアフレームが更新された時
         $(document).on('wp-media-frame-content', function() {
-            setTimeout(addMimeTypeLabels, 200);
+            setTimeout(addMimeTypeLabels, 50);
         });
 
         // 従来の方法も併用（互換性のため）
         if (wp.media.frame && wp.media.frame.on) {
             wp.media.frame.on('open', function() {
-                setTimeout(addMimeTypeLabels, 300);
+                setTimeout(addMimeTypeLabels, 50);
             });
 
             wp.media.frame.on('content:create:browse', function() {
-                setTimeout(addMimeTypeLabels, 400);
+                setTimeout(addMimeTypeLabels, 100);
             });
 
             wp.media.frame.on('content:render:browse', function() {
-                setTimeout(addMimeTypeLabels, 200);
+                setTimeout(addMimeTypeLabels, 50);
             });
         }
     }
 
     $(window).on('load', function() {
-        setTimeout(addMimeTypeLabels, 800);
+        setTimeout(addMimeTypeLabels, 200);
     });
-
-    // 定期的チェック（確実性のため）
-    setInterval(function() {
-        if ($('.media-modal:visible .attachment').length > 0) {
-            addMimeTypeLabels();
-        }
-    }, 2000);
 });
