@@ -366,6 +366,61 @@ class AndwImageControlSettings {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
+            // 上書きサイズとサイズオプションのマッピング
+            var sizeMapping = {
+                'thumb-sm': { width: 360, height: 360 },
+                'thumb-md': { width: 480, height: 480 },
+                'thumb-lg': { width: 600, height: 600 },
+                'content-sm': { width: 720, height: 0 },
+                'content-md': { width: 960, height: 0 },
+                'content-lg': { width: 1200, height: 0 },
+                'hero-md': { width: 1440, height: 0 },
+                'hero-lg': { width: 1920, height: 0 }
+            };
+
+            // disabled制御関数
+            function updateStandardSizeFields() {
+                // サムネイル
+                var thumbnailOverride = $('select[name="andw_thumbnail_override_size"]').val();
+                var thumbnailInputs = $('input[name="thumbnail_size_w"], input[name="thumbnail_size_h"], input[name="andw_jpeg_quality_thumbnail"]');
+                var thumbnailCrop = $('input[name="thumbnail_crop"]');
+
+                if (thumbnailOverride && thumbnailOverride !== '' && sizeMapping[thumbnailOverride]) {
+                    // 上書きサイズが選択されている場合
+                    $('input[name="thumbnail_size_w"]').val(sizeMapping[thumbnailOverride].width);
+                    $('input[name="thumbnail_size_h"]').val(sizeMapping[thumbnailOverride].height);
+                    thumbnailInputs.prop('disabled', true).css('background-color', '#f7f7f7');
+                } else {
+                    // 上書きサイズが選択されていない場合
+                    thumbnailInputs.prop('disabled', false).css('background-color', '');
+                }
+                // サムネイルを実寸法に切り抜くは常に有効
+                thumbnailCrop.prop('disabled', false);
+
+                // 中サイズ
+                var mediumOverride = $('select[name="andw_medium_override_size"]').val();
+                var mediumInputs = $('input[name="medium_size_w"], input[name="medium_size_h"], input[name="andw_jpeg_quality_medium"]');
+
+                if (mediumOverride && mediumOverride !== '' && sizeMapping[mediumOverride]) {
+                    $('input[name="medium_size_w"]').val(sizeMapping[mediumOverride].width);
+                    $('input[name="medium_size_h"]').val(sizeMapping[mediumOverride].height);
+                    mediumInputs.prop('disabled', true).css('background-color', '#f7f7f7');
+                } else {
+                    mediumInputs.prop('disabled', false).css('background-color', '');
+                }
+
+                // 大サイズ
+                var largeOverride = $('select[name="andw_large_override_size"]').val();
+                var largeInputs = $('input[name="large_size_w"], input[name="large_size_h"], input[name="andw_jpeg_quality_large"]');
+
+                if (largeOverride && largeOverride !== '' && sizeMapping[largeOverride]) {
+                    $('input[name="large_size_w"]').val(sizeMapping[largeOverride].width);
+                    $('input[name="large_size_h"]').val(sizeMapping[largeOverride].height);
+                    largeInputs.prop('disabled', true).css('background-color', '#f7f7f7');
+                } else {
+                    largeInputs.prop('disabled', false).css('background-color', '');
+                }
+            }
             // サムネイルを横並び1行に変更
             var thumbnailRow = $('input[name="thumbnail_size_w"]').closest('tr');
             if (thumbnailRow.length) {
@@ -459,6 +514,24 @@ class AndwImageControlSettings {
 
                 largeTable.find('tr').eq(largeIndex - 1).after(largeRowHtml);
             }
+
+            // 初期状態を設定（ページ読み込み時）
+            setTimeout(function() {
+                updateStandardSizeFields();
+            }, 100);
+
+            // 上書きサイズ変更時のイベントリスナー
+            $(document).on('change', 'select[name="andw_thumbnail_override_size"]', function() {
+                updateStandardSizeFields();
+            });
+
+            $(document).on('change', 'select[name="andw_medium_override_size"]', function() {
+                updateStandardSizeFields();
+            });
+
+            $(document).on('change', 'select[name="andw_large_override_size"]', function() {
+                updateStandardSizeFields();
+            });
         });
         </script>
         <?php

@@ -30,9 +30,16 @@ class AndwJpegQuality {
         $this->write_debug_log("Current size: " . ($current_size ?: 'null'));
 
         if ($current_size) {
+            // 上書きサイズが設定されている場合は、上書きサイズの品質設定を優先
+            $override_quality = $this->get_override_quality($current_size);
+            if ($override_quality !== null) {
+                $this->write_debug_log("Applied override quality for {$current_size}: " . $override_quality);
+                return intval($override_quality);
+            }
+
+            // 標準サイズの品質設定を使用
             $quality_option = get_option('andw_jpeg_quality_' . $current_size);
             $this->write_debug_log("Quality option for {$current_size}: " . ($quality_option ?: 'not set'));
-
 
             if ($quality_option && is_numeric($quality_option)) {
                 $this->write_debug_log("Applied quality: " . intval($quality_option));
@@ -220,6 +227,33 @@ class AndwJpegQuality {
         }
 
         $this->write_debug_log("No size match found for {$width}x{$height}");
+        return null;
+    }
+
+    /**
+     * 上書きサイズ設定に基づく品質取得
+     */
+    private function get_override_quality($current_size) {
+        // 標準サイズの場合のみ上書き対象
+        if (!in_array($current_size, ['thumbnail', 'medium', 'large'])) {
+            return null;
+        }
+
+        // 対応する上書きサイズ設定を取得
+        $override_size = get_option('andw_' . $current_size . '_override_size', '');
+
+        if (empty($override_size)) {
+            return null; // 上書きサイズが設定されていない
+        }
+
+        // 上書きサイズの品質設定を取得
+        $override_quality = get_option('andw_jpeg_quality_' . $override_size);
+
+        if ($override_quality && is_numeric($override_quality)) {
+            $this->write_debug_log("Found override size {$override_size} for {$current_size} with quality: {$override_quality}");
+            return $override_quality;
+        }
+
         return null;
     }
 
