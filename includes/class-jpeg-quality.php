@@ -132,7 +132,9 @@ class AndwJpegQuality {
         $this->write_debug_log("Analyzing filename: " . $filename);
 
         // ファイル名のパターン: filename-scaled-X-WIDTHxHEIGHT.extension または filename-WIDTHxHEIGHT.extension
+        $this->write_debug_log("Attempting preg_match on: " . $filename);
         if (preg_match('/-(\d+)x(\d+)\.jpg$/', $filename, $matches)) {
+            $this->write_debug_log("preg_match succeeded: " . json_encode($matches));
             $width = intval($matches[1]);
             $height = intval($matches[2]);
             $this->write_debug_log("Extracted dimensions from filename: {$width}x{$height}");
@@ -145,6 +147,8 @@ class AndwJpegQuality {
                 $this->write_debug_log("Matched size name from filename: " . $size_name);
                 return $size_name;
             }
+        } else {
+            $this->write_debug_log("preg_match failed - no pattern match found");
         }
 
         return null;
