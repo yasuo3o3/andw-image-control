@@ -70,13 +70,20 @@ class AndwJpegQuality {
         $this->write_debug_log("=== image_make_intermediate_size called ===");
         $this->write_debug_log("Resized: " . $resized);
 
-        // バックトレースでサイズ情報を取得
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 15);
-        $size_name = $this->extract_size_from_backtrace($backtrace);
+        // 1. ファイル名からサイズ情報を推測（確実性が高い）
+        $size_name = $this->extract_size_from_filename($resized);
+
+        // 2. バックトレースでサイズ情報を取得（フォールバック）
+        if (!$size_name) {
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+            $size_name = $this->extract_size_from_backtrace($backtrace);
+        }
 
         if ($size_name) {
             $GLOBALS['andw_current_image_size'] = $size_name;
             $this->write_debug_log("Set current image size: " . $size_name);
+        } else {
+            $this->write_debug_log("Failed to determine image size");
         }
 
         return $resized;
@@ -86,13 +93,18 @@ class AndwJpegQuality {
      * バックトレースからサイズ名を抽出する
      */
     private function extract_size_from_backtrace($backtrace) {
-        foreach ($backtrace as $trace) {
+        $this->write_debug_log("Analyzing backtrace...");
+
+        foreach ($backtrace as $i => $trace) {
+            $this->write_debug_log("Frame $i: " . (isset($trace['function']) ? $trace['function'] : 'unknown'));
+
             if (isset($trace['function']) && $trace['function'] === 'make_subsize') {
                 // make_subsizeの引数からサイズ情報を推測
                 if (isset($trace['args']) && is_array($trace['args'])) {
                     $args = $trace['args'];
                     if (isset($args[0]) && is_array($args[0])) {
                         $size_array = $args[0];
+                        $this->write_debug_log("Found make_subsize with args: " . json_encode($size_array));
                         return $this->determine_size_name($size_array);
                     }
                 }
@@ -102,9 +114,34 @@ class AndwJpegQuality {
             if (isset($trace['args']) && is_array($trace['args'])) {
                 foreach ($trace['args'] as $arg) {
                     if (is_string($arg) && in_array($arg, ['thumbnail', 'medium', 'large', 'full'])) {
+                        $this->write_debug_log("Found size string in args: " . $arg);
                         return $arg;
                     }
                 }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * ファイル名からサイズ情報を推測する
+     */
+    private function extract_size_from_filename($filepath) {
+        $filename = basename($filepath);
+        $this->write_debug_log("Analyzing filename: " . $filename);
+
+        // ファイル名のパターン: filename-scaled-X-WIDTHxHEIGHT.extension または filename-WIDTHxHEIGHT.extension
+        if (preg_match('/-(\d+)x(\d+)\.jpg$/', $filename, $matches)) {
+            $width = intval($matches[1]);
+            $height = intval($matches[2]);
+            $this->write_debug_log("Extracted dimensions from filename: {$width}x{$height}");
+
+            // サイズ情報から対応するサイズ名を特定
+            $size_name = $this->determine_size_name(array('width' => $width, 'height' => $height));
+            if ($size_name) {
+                $this->write_debug_log("Matched size name from filename: " . $size_name);
+                return $size_name;
             }
         }
 

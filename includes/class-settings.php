@@ -140,6 +140,15 @@ class AndwImageControlSettings {
         }
 
         add_settings_field(
+            'andw_jpeg_quality_default',
+            __('デフォルトJPEG品質', 'andw-image-control'),
+            array($this, 'simple_quality_field_callback'),
+            'media',
+            'andw_image_control_section',
+            array('option_name' => 'andw_jpeg_quality_default')
+        );
+
+        add_settings_field(
             'andw_convert_png_to_jpeg',
             __('PNG→JPEG変換', 'andw-image-control'),
             array($this, 'checkbox_field_callback'),
