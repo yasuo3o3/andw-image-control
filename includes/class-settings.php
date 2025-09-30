@@ -366,16 +366,16 @@ class AndwImageControlSettings {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
-            // 上書きサイズとサイズオプションのマッピング
+            // 上書きサイズとサイズオプションのマッピング（品質設定も含む）
             var sizeMapping = {
-                'thumb-sm': { width: 360, height: 360 },
-                'thumb-md': { width: 480, height: 480 },
-                'thumb-lg': { width: 600, height: 600 },
-                'content-sm': { width: 720, height: 0 },
-                'content-md': { width: 960, height: 0 },
-                'content-lg': { width: 1200, height: 0 },
-                'hero-md': { width: 1440, height: 0 },
-                'hero-lg': { width: 1920, height: 0 }
+                'thumb-sm': { width: 360, height: 360, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-sm', 82)); ?> },
+                'thumb-md': { width: 480, height: 480, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-md', 82)); ?> },
+                'thumb-lg': { width: 600, height: 600, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-lg', 82)); ?> },
+                'content-sm': { width: 720, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-sm', 82)); ?> },
+                'content-md': { width: 960, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-md', 82)); ?> },
+                'content-lg': { width: 1200, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-lg', 82)); ?> },
+                'hero-md': { width: 1440, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-md', 82)); ?> },
+                'hero-lg': { width: 1920, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-lg', 82)); ?> }
             };
 
             // disabled制御関数
@@ -389,6 +389,7 @@ class AndwImageControlSettings {
                     // 上書きサイズが選択されている場合
                     $('input[name="thumbnail_size_w"]').val(sizeMapping[thumbnailOverride].width);
                     $('input[name="thumbnail_size_h"]').val(sizeMapping[thumbnailOverride].height);
+                    $('input[name="andw_jpeg_quality_thumbnail"]').val(sizeMapping[thumbnailOverride].quality);
                     thumbnailInputs.prop('disabled', true).css('background-color', '#f7f7f7');
                 } else {
                     // 上書きサイズが選択されていない場合
@@ -404,6 +405,7 @@ class AndwImageControlSettings {
                 if (mediumOverride && mediumOverride !== '' && sizeMapping[mediumOverride]) {
                     $('input[name="medium_size_w"]').val(sizeMapping[mediumOverride].width);
                     $('input[name="medium_size_h"]').val(sizeMapping[mediumOverride].height);
+                    $('input[name="andw_jpeg_quality_medium"]').val(sizeMapping[mediumOverride].quality);
                     mediumInputs.prop('disabled', true).css('background-color', '#f7f7f7');
                 } else {
                     mediumInputs.prop('disabled', false).css('background-color', '');
@@ -416,6 +418,7 @@ class AndwImageControlSettings {
                 if (largeOverride && largeOverride !== '' && sizeMapping[largeOverride]) {
                     $('input[name="large_size_w"]').val(sizeMapping[largeOverride].width);
                     $('input[name="large_size_h"]').val(sizeMapping[largeOverride].height);
+                    $('input[name="andw_jpeg_quality_large"]').val(sizeMapping[largeOverride].quality);
                     largeInputs.prop('disabled', true).css('background-color', '#f7f7f7');
                 } else {
                     largeInputs.prop('disabled', false).css('background-color', '');
