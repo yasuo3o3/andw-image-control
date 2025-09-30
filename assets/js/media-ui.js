@@ -59,25 +59,48 @@ jQuery(document).ready(function($) {
             if ($mediaIcon.find('.andw-mime-label').length > 0) {
                 return;
             }
+
+            var attachmentId = null;
+
+            // Method 1: Get from link href
             var $link = $mediaIcon.find('a');
-            if (!$link.length) {
-                return;
+            if ($link.length) {
+                var href = $link.attr('href');
+                var matches = href.match(/post=(\d+)/);
+                if (matches) {
+                    attachmentId = parseInt(matches[1]);
+                    console.log('Found ID from media-icon link:', attachmentId);
+                }
             }
-            var href = $link.attr('href');
-            var matches = href.match(/post=(\d+)/);
-            if (matches) {
-                var attachmentId = parseInt(matches[1]);
+
+            // Method 2: Get from parent row
+            if (!attachmentId) {
+                var $row = $mediaIcon.closest('tr');
+                if ($row.length) {
+                    var rowId = $row.attr('id');
+                    if (rowId) {
+                        var matches = rowId.match(/post-(\d+)/);
+                        if (matches) {
+                            attachmentId = parseInt(matches[1]);
+                            console.log('Found ID from parent row:', attachmentId);
+                        }
+                    }
+                }
+            }
+
+            if (attachmentId) {
                 attachmentIds.push(attachmentId);
                 $elementsToProcess.push({
                     id: attachmentId,
                     element: $mediaIcon,
                     type: 'list'
                 });
+                console.log('Media icon processed:', attachmentId);
             }
         });
 
-        // Additional check for list view table rows
-        $('.wp-list-table .type-attachment').each(function() {
+        // Additional check for list view table rows - using actual WordPress structure
+        $('.wp-list-table tr[id^="post-"]').each(function() {
             var $row = $(this);
             var $mediaIcon = $row.find('.media-icon');
             if (!$mediaIcon.length || $mediaIcon.find('.andw-mime-label').length > 0) {
@@ -91,6 +114,7 @@ jQuery(document).ready(function($) {
                 var matches = rowId.match(/post-(\d+)/);
                 if (matches) {
                     attachmentId = parseInt(matches[1]);
+                    console.log('Found attachment ID from row ID:', attachmentId);
                 }
             }
 
@@ -102,6 +126,7 @@ jQuery(document).ready(function($) {
                     var matches = href.match(/post=(\d+)/);
                     if (matches) {
                         attachmentId = parseInt(matches[1]);
+                        console.log('Found attachment ID from link:', attachmentId);
                     }
                 }
             }
@@ -113,6 +138,7 @@ jQuery(document).ready(function($) {
                     element: $mediaIcon,
                     type: 'list'
                 });
+                console.log('Added to process list:', attachmentId);
             }
         });
 
@@ -145,7 +171,12 @@ jQuery(document).ready(function($) {
                                     $thumbnail.append($label);
                                 }
                             } else if (item.type === 'list') {
-                                item.element.css('position', 'relative').append($label);
+                                // For list view, ensure proper positioning and append label
+                                item.element.css({
+                                    'position': 'relative',
+                                    'display': 'inline-block'
+                                }).append($label);
+                                console.log('Label added to list item:', item.id, $label[0]);
                             }
                         }
                     });
@@ -158,7 +189,7 @@ jQuery(document).ready(function($) {
         console.log('addMimeTypeLabels called');
         console.log('List tables found:', $('.wp-list-table').length);
         console.log('Media icons found:', $('.wp-list-table .media-icon').length);
-        console.log('Attachment rows found:', $('.wp-list-table .type-attachment').length);
+        console.log('Attachment rows found:', $('.wp-list-table tr[id^="post-"]').length);
 
         // Try Option B first (pre-embedded data), fallback to Option A (batch AJAX)
         addMimeTypeLabelsFromJS();
