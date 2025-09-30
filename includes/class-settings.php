@@ -352,7 +352,7 @@ class AndwImageControlSettings {
             check_admin_referer('media-options');
 
             if (!current_user_can('manage_options')) {
-                wp_die(__('You do not have sufficient permissions to access this page.'));
+                wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'andw-image-control'));
             }
 
             // チェックボックスがチェックされている場合は1、されていない場合は0
