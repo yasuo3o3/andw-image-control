@@ -12,7 +12,7 @@ class AndwJpegQuality {
 
         // ステップ1: サイズ情報確認のためのフック追加
         add_filter('wp_generate_attachment_metadata', array($this, 'debug_attachment_metadata'), 10, 2);
-        add_filter('image_make_intermediate_size', array($this, 'capture_image_size'), 10, 3);
+        add_filter('image_make_intermediate_size', array($this, 'capture_image_size'), 10, 1);
     }
 
     public function set_jpeg_quality($quality, $mime_type = null) {
@@ -40,7 +40,7 @@ class AndwJpegQuality {
 
         $default_quality = get_option('andw_jpeg_quality_default', 82);
         $this->write_debug_log("Applied default quality: " . $default_quality);
-        return is_numeric($default_quality) ? intval($default_quality) : 82;
+        return is_numeric($default_quality) && $default_quality != '' ? intval($default_quality) : 82;
     }
 
     /**
@@ -65,20 +65,50 @@ class AndwJpegQuality {
     /**
      * ステップ1: image_make_intermediate_size フィルタでサイズ情報をキャプチャ
      */
-    public function capture_image_size($resized, $file, $size) {
+    public function capture_image_size($resized) {
         // サイズ情報をログに出力
         $this->write_debug_log("=== image_make_intermediate_size called ===");
-        $this->write_debug_log("File: " . $file);
-        $this->write_debug_log("Size: " . (is_array($size) ? json_encode($size) : $size));
+        $this->write_debug_log("Resized: " . $resized);
 
-        // ステップ2: サイズ名を特定してグローバル変数に設定
-        $size_name = $this->determine_size_name($size);
+        // バックトレースでサイズ情報を取得
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 15);
+        $size_name = $this->extract_size_from_backtrace($backtrace);
+
         if ($size_name) {
             $GLOBALS['andw_current_image_size'] = $size_name;
             $this->write_debug_log("Set current image size: " . $size_name);
         }
 
         return $resized;
+    }
+
+    /**
+     * バックトレースからサイズ名を抽出する
+     */
+    private function extract_size_from_backtrace($backtrace) {
+        foreach ($backtrace as $trace) {
+            if (isset($trace['function']) && $trace['function'] === 'make_subsize') {
+                // make_subsizeの引数からサイズ情報を推測
+                if (isset($trace['args']) && is_array($trace['args'])) {
+                    $args = $trace['args'];
+                    if (isset($args[0]) && is_array($args[0])) {
+                        $size_array = $args[0];
+                        return $this->determine_size_name($size_array);
+                    }
+                }
+            }
+
+            // その他のフレームでサイズ情報が含まれる場合の処理
+            if (isset($trace['args']) && is_array($trace['args'])) {
+                foreach ($trace['args'] as $arg) {
+                    if (is_string($arg) && in_array($arg, ['thumbnail', 'medium', 'large', 'full'])) {
+                        return $arg;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
