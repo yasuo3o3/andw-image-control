@@ -113,10 +113,12 @@ class AndwImageControlSettings {
                         $custom_label = __('標準非表示設定2048', 'andw-image-control');
                     } elseif ($size_name === '1536x1536') {
                         $custom_label = __('標準非表示設定1536', 'andw-image-control');
+                    } elseif ($size_name === 'medium_large') {
+                        $custom_label = __('中大サイズ設定768', 'andw-image-control');
                     }
 
                     // 特定サイズには専用のコールバック関数を使用
-                    if ($size_name === '2048x2048' || $size_name === '1536x1536') {
+                    if ($size_name === '2048x2048' || $size_name === '1536x1536' || $size_name === 'medium_large') {
                         add_settings_field(
                             'andw_jpeg_quality_' . $size_name,
                             $custom_label,
