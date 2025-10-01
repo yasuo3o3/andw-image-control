@@ -9,14 +9,15 @@ class AndwImageSizes {
     private static $hooks_registered = false;
 
     private $custom_sizes = array(
-        'thumb-sm' => array('width' => 360, 'height' => 360, 'crop' => true, 'label' => 'サムネイル小'),
-        'thumb-md' => array('width' => 480, 'height' => 480, 'crop' => true, 'label' => 'サムネイル中'),
-        'thumb-lg' => array('width' => 600, 'height' => 600, 'crop' => true, 'label' => 'サムネイル大'),
+        'thumb-sm' => array('width' => 360, 'height' => 0, 'crop' => false, 'label' => 'サムネイル小'),
+        'thumb-md' => array('width' => 480, 'height' => 0, 'crop' => false, 'label' => 'サムネイル中'),
+        'thumb-lg' => array('width' => 600, 'height' => 0, 'crop' => false, 'label' => 'サムネイル大'),
         'content-sm' => array('width' => 720, 'height' => 0, 'crop' => false, 'label' => 'コンテンツ小'),
         'content-md' => array('width' => 960, 'height' => 0, 'crop' => false, 'label' => 'コンテンツ中'),
         'content-lg' => array('width' => 1200, 'height' => 0, 'crop' => false, 'label' => 'コンテンツ大'),
-        'hero-md' => array('width' => 1440, 'height' => 0, 'crop' => false, 'label' => 'ヒーロー中'),
-        'hero-lg' => array('width' => 1920, 'height' => 0, 'crop' => false, 'label' => 'ヒーロー大'),
+        'hero-sm' => array('width' => 1440, 'height' => 0, 'crop' => false, 'label' => 'ヒーロー小'),
+        'hero-md' => array('width' => 1920, 'height' => 0, 'crop' => false, 'label' => 'ヒーロー中'),
+        'hero-lg' => array('width' => 2560, 'height' => 0, 'crop' => false, 'label' => 'ヒーロー大'),
     );
 
     public function __construct() {

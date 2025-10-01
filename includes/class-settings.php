@@ -80,10 +80,24 @@ class AndwImageControlSettings {
             }
             // 標準サイズの場合は別途処理
             if (!in_array($size_name, array('thumbnail', 'medium', 'large', 'full'))) {
+                // カスタムサイズごとの品質デフォルト値を設定
+                $quality_defaults = array(
+                    'thumb-sm' => 50,
+                    'thumb-md' => 50,
+                    'thumb-lg' => 50,
+                    'content-sm' => 50,
+                    'content-md' => 50,
+                    'content-lg' => 53,
+                    'hero-sm' => 56,
+                    'hero-md' => 59,
+                    'hero-lg' => 65,
+                );
+                $default_quality = isset($quality_defaults[$size_name]) ? $quality_defaults[$size_name] : 65;
+
                 register_setting('media', 'andw_jpeg_quality_' . $size_name, array(
                     'type' => 'integer',
                     'sanitize_callback' => array($this, 'sanitize_quality'),
-                    'default' => 82,
+                    'default' => $default_quality,
                 ));
             }
         }
@@ -92,6 +106,46 @@ class AndwImageControlSettings {
             'andw_image_control_section',
             __('andW Media Control 設定', 'andw-image-control'),
             array($this, 'section_callback'),
+            'media'
+        );
+
+        // 品質セクション
+        add_settings_section(
+            'andw_quality_section',
+            __('品質', 'andw-image-control'),
+            array($this, 'quality_section_callback'),
+            'media'
+        );
+
+        // SVGセクション
+        add_settings_section(
+            'andw_svg_section',
+            __('SVG', 'andw-image-control'),
+            array($this, 'svg_section_callback'),
+            'media'
+        );
+
+        // 上書きサイズセクション
+        add_settings_section(
+            'andw_override_sizes_section',
+            __('上書きサイズ', 'andw-image-control'),
+            array($this, 'override_sizes_section_callback'),
+            'media'
+        );
+
+        // カスタムサイズセクション
+        add_settings_section(
+            'andw_custom_sizes_section',
+            __('カスタムサイズ', 'andw-image-control'),
+            array($this, 'custom_sizes_section_callback'),
+            'media'
+        );
+
+        // 規定サイズ[非表示]セクション
+        add_settings_section(
+            'andw_standard_hidden_section',
+            __('規定サイズ[非表示]', 'andw-image-control'),
+            array($this, 'standard_hidden_section_callback'),
             'media'
         );
 
@@ -104,7 +158,7 @@ class AndwImageControlSettings {
                     $label,
                     array($this, 'image_size_field_callback'),
                     'media',
-                    'andw_image_control_section',
+                    'andw_custom_sizes_section',
                     array('size_name' => $size_name, 'size_data' => $custom_sizes[$size_name])
                 );
             } else {
@@ -113,11 +167,11 @@ class AndwImageControlSettings {
                     // 特定サイズのラベルを変更
                     $custom_label = $size_label;
                     if ($size_name === '2048x2048') {
-                        $custom_label = __('標準非表示設定2048', 'andw-image-control');
+                        $custom_label = __('規定サイズ[非表示] 2048', 'andw-image-control');
                     } elseif ($size_name === '1536x1536') {
-                        $custom_label = __('標準非表示設定1536', 'andw-image-control');
+                        $custom_label = __('規定サイズ[非表示] 1536', 'andw-image-control');
                     } elseif ($size_name === 'medium_large') {
-                        $custom_label = __('標準非表示設定768中大', 'andw-image-control');
+                        $custom_label = __('規定サイズ[非表示] 768', 'andw-image-control');
                     }
 
                     // 特定サイズには専用のコールバック関数を使用
@@ -127,7 +181,7 @@ class AndwImageControlSettings {
                             $custom_label,
                             array($this, 'standard_hidden_size_field_callback'),
                             'media',
-                            'andw_image_control_section',
+                            'andw_standard_hidden_section',
                             array('option_name' => 'andw_jpeg_quality_' . $size_name)
                         );
                     } else {
@@ -149,7 +203,7 @@ class AndwImageControlSettings {
             __('デフォルトJPEG品質', 'andw-image-control'),
             array($this, 'simple_quality_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_quality_section',
             array('option_name' => 'andw_jpeg_quality_default')
         );
 
@@ -158,7 +212,7 @@ class AndwImageControlSettings {
             __('PNG→JPEG変換', 'andw-image-control'),
             array($this, 'checkbox_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_quality_section',
             array('option_name' => 'andw_convert_png_to_jpeg', 'label' => __('PNGアップロード時に自動でJPEGバージョンを作成', 'andw-image-control'))
         );
 
@@ -167,7 +221,7 @@ class AndwImageControlSettings {
             __('PNG→JPEG 品質', 'andw-image-control'),
             array($this, 'simple_quality_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_quality_section',
             array('option_name' => 'andw_png_to_jpeg_quality')
         );
 
@@ -176,7 +230,7 @@ class AndwImageControlSettings {
             __('SVGアップロード', 'andw-image-control'),
             array($this, 'checkbox_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_svg_section',
             array('option_name' => 'andw_enable_svg_upload', 'label' => __('SVGファイルのアップロードを許可', 'andw-image-control'))
         );
 
@@ -185,7 +239,7 @@ class AndwImageControlSettings {
             __('SVGサニタイズ', 'andw-image-control'),
             array($this, 'checkbox_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_svg_section',
             array('option_name' => 'andw_svg_sanitize', 'label' => __('SVGアップロード時にセキュリティサニタイズを実行', 'andw-image-control'))
         );
 
@@ -196,7 +250,7 @@ class AndwImageControlSettings {
             __('サムネイル上書きサイズ', 'andw-image-control'),
             array($this, 'select_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_override_sizes_section',
             array('option_name' => 'andw_thumbnail_override_size', 'options' => $size_options)
         );
 
@@ -205,7 +259,7 @@ class AndwImageControlSettings {
             __('中サイズ上書きサイズ', 'andw-image-control'),
             array($this, 'select_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_override_sizes_section',
             array('option_name' => 'andw_medium_override_size', 'options' => $size_options)
         );
 
@@ -214,7 +268,7 @@ class AndwImageControlSettings {
             __('大サイズ上書きサイズ', 'andw-image-control'),
             array($this, 'select_field_callback'),
             'media',
-            'andw_image_control_section',
+            'andw_override_sizes_section',
             array('option_name' => 'andw_large_override_size', 'options' => $size_options)
         );
 
@@ -232,6 +286,16 @@ class AndwImageControlSettings {
 
     public function section_callback() {
         echo '<p>' . esc_html__('andW Media Controlプラグインの設定を調整してください。', 'andw-image-control') . '</p>';
+    }
+
+    public function custom_sizes_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('独自に追加されたカスタム画像サイズの設定です。', 'andw-image-control') . '</p>';
+    }
+
+    public function standard_hidden_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('WordPressの標準サイズで、メディア選択時には表示されない規定サイズの品質設定です。', 'andw-image-control') . '</p>';
     }
 
     public function quality_field_callback($args) {
@@ -340,6 +404,23 @@ class AndwImageControlSettings {
             'default' => 82,
         ));
 
+        // 標準非表示設定サイズの品質設定
+        register_setting('media', 'andw_jpeg_quality_medium_large', array(
+            'type' => 'integer',
+            'sanitize_callback' => array($this, 'sanitize_quality'),
+            'default' => 50,
+        ));
+        register_setting('media', 'andw_jpeg_quality_1536x1536', array(
+            'type' => 'integer',
+            'sanitize_callback' => array($this, 'sanitize_quality'),
+            'default' => 56,
+        ));
+        register_setting('media', 'andw_jpeg_quality_2048x2048', array(
+            'type' => 'integer',
+            'sanitize_callback' => array($this, 'sanitize_quality'),
+            'default' => 62,
+        ));
+
         // thumbnail_crop の保存処理
         add_filter('pre_update_option_thumbnail_crop', array($this, 'handle_thumbnail_crop_option'), 10, 3);
 
@@ -395,14 +476,15 @@ class AndwImageControlSettings {
         jQuery(document).ready(function($) {
             // 上書きサイズとサイズオプションのマッピング（品質設定も含む）
             var sizeMapping = {
-                'thumb-sm': { width: 360, height: 360, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-sm', 82)); ?> },
-                'thumb-md': { width: 480, height: 480, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-md', 82)); ?> },
-                'thumb-lg': { width: 600, height: 600, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-lg', 82)); ?> },
-                'content-sm': { width: 720, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-sm', 82)); ?> },
-                'content-md': { width: 960, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-md', 82)); ?> },
-                'content-lg': { width: 1200, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-lg', 82)); ?> },
-                'hero-md': { width: 1440, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-md', 82)); ?> },
-                'hero-lg': { width: 1920, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-lg', 82)); ?> }
+                'thumb-sm': { width: 360, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-sm', 50)); ?> },
+                'thumb-md': { width: 480, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-md', 50)); ?> },
+                'thumb-lg': { width: 600, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-lg', 50)); ?> },
+                'content-sm': { width: 720, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-sm', 50)); ?> },
+                'content-md': { width: 960, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-md', 50)); ?> },
+                'content-lg': { width: 1200, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_content-lg', 53)); ?> },
+                'hero-sm': { width: 1440, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-sm', 56)); ?> },
+                'hero-md': { width: 1920, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-md', 59)); ?> },
+                'hero-lg': { width: 2560, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_hero-lg', 65)); ?> }
             };
 
             // disabled制御関数
@@ -580,6 +662,7 @@ class AndwImageControlSettings {
     }
 
     public function regeneration_info_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin: 0 0 10px 0;">' . esc_html__('設定を変更した後、既存のメディアに新しい品質を適用するには、以下のプラグインを使用してサムネイルを再生成してください。', 'andw-image-control') . '</p>';
         echo '<ul style="margin: 10px 0; padding-left: 20px;">';
         echo '<li><a href="https://wordpress.org/plugins/regenerate-thumbnails/" target="_blank" rel="noopener noreferrer">Regenerate Thumbnails</a> - ' . esc_html__('標準的なサムネイル再生成プラグイン', 'andw-image-control') . '</li>';

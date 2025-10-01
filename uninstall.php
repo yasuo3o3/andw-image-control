@@ -23,6 +23,9 @@ $fixed_options = array(
     'andw_jpeg_quality_thumbnail',
     'andw_jpeg_quality_medium',
     'andw_jpeg_quality_large',
+    'andw_jpeg_quality_medium_large',
+    'andw_jpeg_quality_1536x1536',
+    'andw_jpeg_quality_2048x2048',
 );
 
 foreach ($fixed_options as $option) {
@@ -30,7 +33,7 @@ foreach ($fixed_options as $option) {
 }
 
 // カスタム画像サイズの動的オプション削除
-$custom_sizes = array('thumb-sm', 'thumb-md', 'thumb-lg', 'content-sm', 'content-md', 'content-lg', 'hero-md', 'hero-lg');
+$custom_sizes = array('thumb-sm', 'thumb-md', 'thumb-lg', 'content-sm', 'content-md', 'content-lg', 'hero-sm', 'hero-md', 'hero-lg');
 
 foreach ($custom_sizes as $size_name) {
     delete_option('andw_image_width_' . $size_name);
