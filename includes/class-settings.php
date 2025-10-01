@@ -117,6 +117,22 @@ class AndwImageControlSettings {
             'media'
         );
 
+        // 規定サイズ[非表示]セクション
+        add_settings_section(
+            'andw_standard_hidden_section',
+            __('規定サイズ[非表示]', 'andw-image-control'),
+            array($this, 'standard_hidden_section_callback'),
+            'media'
+        );
+
+        // カスタムサイズセクション
+        add_settings_section(
+            'andw_custom_sizes_section',
+            __('カスタムサイズ', 'andw-image-control'),
+            array($this, 'custom_sizes_section_callback'),
+            'media'
+        );
+
         // SVGセクション
         add_settings_section(
             'andw_svg_section',
@@ -130,22 +146,6 @@ class AndwImageControlSettings {
             'andw_override_sizes_section',
             __('上書きサイズ', 'andw-image-control'),
             array($this, 'override_sizes_section_callback'),
-            'media'
-        );
-
-        // カスタムサイズセクション
-        add_settings_section(
-            'andw_custom_sizes_section',
-            __('カスタムサイズ', 'andw-image-control'),
-            array($this, 'custom_sizes_section_callback'),
-            'media'
-        );
-
-        // 規定サイズ[非表示]セクション
-        add_settings_section(
-            'andw_standard_hidden_section',
-            __('規定サイズ[非表示]', 'andw-image-control'),
-            array($this, 'standard_hidden_section_callback'),
             'media'
         );
 
@@ -286,11 +286,21 @@ class AndwImageControlSettings {
 
     public function section_callback() {
         echo '<p>' . esc_html__('andW Media Controlプラグインの設定を調整してください。', 'andw-image-control') . '</p>';
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
     }
 
     public function quality_section_callback() {
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin-bottom: 15px;">' . esc_html__('JPEG品質とPNG変換に関する設定です。', 'andw-image-control') . '</p>';
+    }
+
+    public function standard_hidden_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('WordPressの標準サイズで、メディア選択時には表示されない規定サイズの品質設定です。', 'andw-image-control') . '</p>';
+    }
+
+    public function custom_sizes_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('独自に追加されたカスタム画像サイズの設定です。', 'andw-image-control') . '</p>';
     }
 
     public function svg_section_callback() {
@@ -301,16 +311,6 @@ class AndwImageControlSettings {
     public function override_sizes_section_callback() {
         echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin-bottom: 15px;">' . esc_html__('WordPress標準の画像サイズを、カスタムサイズで上書きする設定です。', 'andw-image-control') . '</p>';
-    }
-
-    public function custom_sizes_section_callback() {
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-        echo '<p style="margin-bottom: 15px;">' . esc_html__('独自に追加されたカスタム画像サイズの設定です。', 'andw-image-control') . '</p>';
-    }
-
-    public function standard_hidden_section_callback() {
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-        echo '<p style="margin-bottom: 15px;">' . esc_html__('WordPressの標準サイズで、メディア選択時には表示されない規定サイズの品質設定です。', 'andw-image-control') . '</p>';
     }
 
     public function quality_field_callback($args) {
