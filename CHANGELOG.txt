@@ -1,4 +1,4 @@
-andW Media Control - Changelog
+andW Image Control - Changelog
 ====================================
 
 v0.3.0 - 2024-12-19

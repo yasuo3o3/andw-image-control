@@ -1,4 +1,4 @@
-=== andW Media Control ===
+=== andW Image Control ===
 Contributors: netservicejp
 Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
@@ -12,7 +12,7 @@ WordPress media control with JPEG quality settings, PNG conversion, custom sizes
 
 == Description ==
 
-andW Media Control extends WordPress image processing capabilities with comprehensive media management features.
+andW Image Control extends WordPress image processing capabilities with comprehensive media management features.
 
 **Key Features:**
 
@@ -27,7 +27,7 @@ This plugin is designed for developers and site administrators who need precise 
 
 **日本語説明:**
 
-andW Media Control は WordPress の画像処理を拡張するプラグインです。JPEG品質のカスタマイズ、PNG→JPEG自動変換、独自画像サイズ管理、SVG対応、メディアライブラリUI拡張を提供します。
+andW Image Control は WordPress の画像処理を拡張するプラグインです。JPEG品質のカスタマイズ、PNG→JPEG自動変換、独自画像サイズ管理、SVG対応、メディアライブラリUI拡張を提供します。
 
 == Installation ==
 

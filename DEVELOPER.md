@@ -1,4 +1,4 @@
-# Developer Documentation - andW Media Control
+# Developer Documentation - andW Image Control
 
 ## Development Environment Setup
 
