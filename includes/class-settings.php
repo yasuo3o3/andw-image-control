@@ -149,6 +149,14 @@ class AndwImageControlSettings {
             'media'
         );
 
+        // 既存メディア処理セクション
+        add_settings_section(
+            'andw_existing_media_section',
+            __('既存メディアの品質変更', 'andw-image-control'),
+            array($this, 'existing_media_section_callback'),
+            'media'
+        );
+
 
         foreach ($image_sizes as $size_name => $size_label) {
             if (isset($custom_sizes[$size_name])) {
@@ -274,10 +282,10 @@ class AndwImageControlSettings {
 
         add_settings_field(
             'andw_regeneration_info',
-            __('既存メディアの品質変更', 'andw-image-control'),
+            __('再生成ツール', 'andw-image-control'),
             array($this, 'regeneration_info_callback'),
             'media',
-            'andw_image_control_section'
+            'andw_existing_media_section'
         );
     }
 
@@ -311,6 +319,11 @@ class AndwImageControlSettings {
     public function override_sizes_section_callback() {
         echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin-bottom: 15px;">' . esc_html__('WordPress標準の画像サイズを、カスタムサイズで上書きする設定です。', 'andw-image-control') . '</p>';
+    }
+
+    public function existing_media_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('設定変更後に既存のメディアファイルを再処理するためのツール情報です。', 'andw-image-control') . '</p>';
     }
 
     public function quality_field_callback($args) {
@@ -677,7 +690,6 @@ class AndwImageControlSettings {
     }
 
     public function regeneration_info_callback() {
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin: 0 0 10px 0;">' . esc_html__('設定を変更した後、既存のメディアに新しい品質を適用するには、以下のプラグインを使用してサムネイルを再生成してください。', 'andw-image-control') . '</p>';
         echo '<ul style="margin: 10px 0; padding-left: 20px;">';
         echo '<li><a href="https://wordpress.org/plugins/regenerate-thumbnails/" target="_blank" rel="noopener noreferrer">Regenerate Thumbnails</a> - ' . esc_html__('標準的なサムネイル再生成プラグイン', 'andw-image-control') . '</li>';
