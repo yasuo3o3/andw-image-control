@@ -294,7 +294,6 @@ class AndwImageControlSettings {
 
     public function section_callback() {
         echo '<p>' . esc_html__('andW Media Controlプラグインの設定を調整してください。', 'andw-image-control') . '</p>';
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
     }
 
     public function quality_section_callback() {
@@ -500,11 +499,10 @@ class AndwImageControlSettings {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
-            // セクション間に区切り線を追加
-            $('.form-table').each(function(index) {
-                if (index > 0) { // 最初のテーブル以外
-                    $(this).before('<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">');
-                }
+            // form内で最初以外のH2タイトルにスタイルを適用
+            $('form h2:not(:first)').css({
+                'border-top': '1px #ddd solid',
+                'padding-top': '2rem'
             });
             // 上書きサイズとサイズオプションのマッピング（品質設定も含む）
             var sizeMapping = {
