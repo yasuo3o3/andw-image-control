@@ -104,7 +104,7 @@ class AndwImageControlSettings {
 
         add_settings_section(
             'andw_image_control_section',
-            __('andW Media Control 設定', 'andw-image-control'),
+            __('andW Image Control 設定', 'andw-image-control'),
             array($this, 'section_callback'),
             'media'
         );
@@ -293,7 +293,7 @@ class AndwImageControlSettings {
     }
 
     public function section_callback() {
-        echo '<p>' . esc_html__('andW Media Controlプラグインの設定を調整してください。', 'andw-image-control') . '</p>';
+        echo '<p>' . esc_html__('andW Image Controlプラグインの設定を調整してください。', 'andw-image-control') . '</p>';
     }
 
     public function quality_section_callback() {

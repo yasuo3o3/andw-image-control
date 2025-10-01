@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: andW Media Control
+ * Plugin Name: andW Image Control
  * Description: 画像品質のカスタマイズ、PNG→JPEG自動変換、独自画像サイズ管理、SVG対応、メディアライブラリUI拡張を提供します。
  * Version: 0.3.0
  * Author: Netservice
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 if (version_compare(PHP_VERSION, '8.1', '<')) {
     add_action('admin_notices', function() {
         echo '<div class="notice notice-error"><p>';
-        echo esc_html__('andW Media Control プラグインはPHP 8.1以上が必要です。現在のバージョン: ', 'andw-image-control') . PHP_VERSION;
+        echo esc_html__('andW Image Control プラグインはPHP 8.1以上が必要です。現在のバージョン: ', 'andw-image-control') . PHP_VERSION;
         echo '</p></div>';
     });
     return;
