@@ -227,7 +227,7 @@ class AndwImageControlSettings {
         add_settings_field(
             'andw_png_to_jpeg_quality',
             __('PNG→JPEG 品質', 'andw-image-control'),
-            array($this, 'simple_quality_field_with_divider_callback'),
+            array($this, 'simple_quality_field_callback'),
             'media',
             'andw_quality_section',
             array('option_name' => 'andw_png_to_jpeg_quality')
@@ -245,7 +245,7 @@ class AndwImageControlSettings {
         add_settings_field(
             'andw_svg_sanitize',
             __('SVGサニタイズ', 'andw-image-control'),
-            array($this, 'checkbox_field_with_divider_callback'),
+            array($this, 'checkbox_field_callback'),
             'media',
             'andw_svg_section',
             array('option_name' => 'andw_svg_sanitize', 'label' => __('SVGアップロード時にセキュリティサニタイズを実行', 'andw-image-control'))
@@ -274,7 +274,7 @@ class AndwImageControlSettings {
         add_settings_field(
             'andw_large_override_size',
             __('大サイズ上書きサイズ', 'andw-image-control'),
-            array($this, 'select_field_with_divider_callback'),
+            array($this, 'select_field_callback'),
             'media',
             'andw_override_sizes_section',
             array('option_name' => 'andw_large_override_size', 'options' => $size_options)
@@ -391,10 +391,6 @@ class AndwImageControlSettings {
         echo '<input type="number" id="' . esc_attr($quality_option) . '" name="' . esc_attr($quality_option) . '" value="' . esc_attr($quality_value ?: 82) . '" min="1" max="100" class="small-text" style="width: 70px;" />';
         echo '</div>';
 
-        // カスタムサイズセクションの最後のフィールド（hero-lg）に区切り線を追加
-        if ($size_name === 'hero-lg') {
-            echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-        }
     }
 
     public function simple_quality_field_callback($args) {
@@ -404,20 +400,6 @@ class AndwImageControlSettings {
         echo '<input type="number" id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '" value="' . esc_attr($value) . '" min="1" max="100" class="small-text" />';
     }
 
-    public function simple_quality_field_with_divider_callback($args) {
-        $this->simple_quality_field_callback($args);
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-    }
-
-    public function checkbox_field_with_divider_callback($args) {
-        $this->checkbox_field_callback($args);
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-    }
-
-    public function select_field_with_divider_callback($args) {
-        $this->select_field_callback($args);
-        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-    }
 
     public function standard_hidden_size_field_callback($args) {
         $option_name = $args['option_name'];
@@ -428,10 +410,6 @@ class AndwImageControlSettings {
         echo '<input type="number" id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '" value="' . esc_attr($value) . '" min="1" max="100" class="small-text" style="width: 70px;" />';
         echo '</div>';
 
-        // 規定サイズ[非表示]セクションの最後のフィールド（2048x2048）に区切り線を追加
-        if ($option_name === 'andw_jpeg_quality_2048x2048') {
-            echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
-        }
     }
 
     public function modify_default_media_fields() {
@@ -522,6 +500,12 @@ class AndwImageControlSettings {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
+            // セクション間に区切り線を追加
+            $('.form-table').each(function(index) {
+                if (index > 0) { // 最初のテーブル以外
+                    $(this).before('<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">');
+                }
+            });
             // 上書きサイズとサイズオプションのマッピング（品質設定も含む）
             var sizeMapping = {
                 'thumb-sm': { width: 360, height: 0, quality: <?php echo esc_js(get_option('andw_jpeg_quality_thumb-sm', 50)); ?> },
