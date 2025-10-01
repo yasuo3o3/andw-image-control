@@ -288,6 +288,21 @@ class AndwImageControlSettings {
         echo '<p>' . esc_html__('andW Media Controlプラグインの設定を調整してください。', 'andw-image-control') . '</p>';
     }
 
+    public function quality_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('JPEG品質とPNG変換に関する設定です。', 'andw-image-control') . '</p>';
+    }
+
+    public function svg_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('SVGファイルのアップロードとセキュリティに関する設定です。', 'andw-image-control') . '</p>';
+    }
+
+    public function override_sizes_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
+        echo '<p style="margin-bottom: 15px;">' . esc_html__('WordPress標準の画像サイズを、カスタムサイズで上書きする設定です。', 'andw-image-control') . '</p>';
+    }
+
     public function custom_sizes_section_callback() {
         echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin-bottom: 15px;">' . esc_html__('独自に追加されたカスタム画像サイズの設定です。', 'andw-image-control') . '</p>';
