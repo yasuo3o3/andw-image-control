@@ -502,7 +502,8 @@ class AndwImageControlSettings {
             // form内で最初以外のH2タイトルにスタイルを適用
             $('form h2:not(:first)').css({
                 'border-top': '1px #ddd solid',
-                'padding-top': '2rem'
+                'padding-top': '2rem',
+                'margin-top': '2rem'
             });
             // 上書きサイズとサイズオプションのマッピング（品質設定も含む）
             var sizeMapping = {
