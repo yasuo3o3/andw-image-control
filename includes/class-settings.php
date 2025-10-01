@@ -298,6 +298,7 @@ class AndwImageControlSettings {
     }
 
     public function quality_section_callback() {
+        echo '<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">';
         echo '<p style="margin-bottom: 15px;">' . esc_html__('JPEG品質とPNG変換に関する設定です。', 'andw-image-control') . '</p>';
     }
 
