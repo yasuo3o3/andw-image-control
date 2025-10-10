@@ -534,17 +534,18 @@ class AndwImageControlSettings {
         $large_quality = get_option('andw_jpeg_quality_large', 82);
         $recommended_values = $this->get_recommended_quality_values();
 
-        // 翻訳済み文字列をJavaScriptに渡す
-        wp_localize_script('jquery', 'andwImageControlL10n', array(
-            'recommendedApplied' => __('推奨値を入力しました。', 'andw-image-control'),
-            'settingsCount' => __('%d個の設定項目に値を設定しました。', 'andw-image-control'),
-            'savePrompt' => __('「変更を保存」ボタンで確定してください。', 'andw-image-control'),
-        ));
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
             // 推奨値設定
             const recommendedValues = <?php echo wp_json_encode($recommended_values); ?>;
+
+            // 翻訳済み文字列
+            const andwImageControlL10n = {
+                recommendedApplied: <?php echo wp_json_encode(__('推奨値を入力しました。', 'andw-image-control')); ?>,
+                settingsCount: <?php echo wp_json_encode(__('%d個の設定項目に値を設定しました。', 'andw-image-control')); ?>,
+                savePrompt: <?php echo wp_json_encode(__('「変更を保存」ボタンで確定してください。', 'andw-image-control')); ?>
+            };
 
             // 推奨値適用ボタンのイベントリスナー
             $('#andw-apply-recommended-quality').on('click', function(e) {
