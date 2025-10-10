@@ -26,6 +26,7 @@ $fixed_options = array(
     'andw_jpeg_quality_medium_large',
     'andw_jpeg_quality_1536x1536',
     'andw_jpeg_quality_2048x2048',
+    'andw_autoload_migration_done', // autoload最適化の移行完了フラグ
 );
 
 foreach ($fixed_options as $option) {

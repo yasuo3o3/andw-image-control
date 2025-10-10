@@ -474,9 +474,14 @@ class AndwImageControlSettings {
     }
 
     /**
-     * autoload最適化: 頻繁に使用されないオプションのautoload無効化
+     * autoload最適化: 頻繁に使用されないオプションのautoload無効化（一度きりの移行処理）
      */
     private function ensure_autoload_optimization() {
+        // 移行完了フラグをチェック（一度きりの処理）
+        if (get_option('andw_autoload_migration_done', false)) {
+            return;
+        }
+
         $non_autoload_options = array(
             'andw_png_to_jpeg_quality',  // PNG変換品質（変換機能使用時のみ）
             'andw_svg_sanitize',         // SVGサニタイズ（SVG使用時のみ）
@@ -491,6 +496,9 @@ class AndwImageControlSettings {
                 add_option($option_name, $value, '', 'no');
             }
         }
+
+        // 移行完了フラグを設定（autoload=noで保存）
+        update_option('andw_autoload_migration_done', true, false);
     }
 
 

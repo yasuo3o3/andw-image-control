@@ -4,7 +4,7 @@ Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.3.3
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,21 @@ The plugin is optimized for performance and only processes images during upload.
 透過は保持されず、白背景で塗りつぶされます。元のPNGファイルも保持されます。
 
 == Changelog ==
+
+= 0.5.0 =
+* **Major**: WordPress Plugin Directory review compliance completed with comprehensive code quality improvements
+* **Security**: Enhanced security measures including proper nonce handling, permission checks, and output escaping
+* **Performance**: Optimized autoload settings and reduced unnecessary database operations
+* **i18n**: Complete internationalization support with all user-facing strings properly translatable
+* **Fixed**: JavaScript localization timing issues resolved for better browser compatibility
+* **Enhanced**: Improved recommended quality values system with better user experience
+* **Cleanup**: Removed wp_cache_flush() from uninstall process to prevent site-wide cache disruption
+* **Quality**: All WPCS compliance issues resolved and code follows WordPress best practices
+
+= 0.3.4 =
+* **Performance**: Fixed autoload optimization to run only once using migration flag instead of every page load
+* **Enhanced**: Added andw_autoload_migration_done flag to prevent unnecessary database operations
+* **Fixed**: Improved uninstall.php to properly clean up migration flag during plugin removal
 
 = 0.3.3 =
 * **Critical**: Fixed wp_localize_script timing issue that caused JavaScript errors in recommended values feature
