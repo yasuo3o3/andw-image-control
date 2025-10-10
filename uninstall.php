@@ -59,5 +59,7 @@ foreach ($all_options as $option_name => $option_value) {
 delete_transient('andw_image_sizes_cache');
 delete_transient('andw_jpeg_quality_cache');
 
-// オプションのautoloadキャッシュをクリア
-wp_cache_flush();
+// プラグイン固有のオブジェクトキャッシュを個別削除
+wp_cache_delete('andw_image_control_settings', 'options');
+wp_cache_delete('andw_image_sizes', 'image_control');
+wp_cache_delete('andw_jpeg_quality_settings', 'image_control');

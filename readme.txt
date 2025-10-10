@@ -4,7 +4,7 @@ Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,14 @@ The plugin is optimized for performance and only processes images during upload.
 透過は保持されず、白背景で塗りつぶされます。元のPNGファイルも保持されます。
 
 == Changelog ==
+
+= 0.3.2 =
+* **Critical**: Removed wp_cache_flush() from uninstall.php to prevent site-wide cache disruption (WordPress.org compliance)
+* **Major**: Implemented i18n for JavaScript notification messages using wp_localize_script
+* **Major**: Added translation support for MIME type labels (JPG, PNG, GIF, SVG, WebP, Other)
+* **Fixed**: PNG to JPEG conversion title now uses translatable sprintf format instead of hardcoded English
+* **Fixed**: Plugin recommendation links (Regenerate Thumbnails, Force Regenerate Thumbnails) now translatable
+* **Enhanced**: Complete i18n compliance for WordPress Plugin Directory submission
 
 = 0.3.1 =
 * **Major**: Added recommended quality values button for easy optimal settings application

@@ -112,17 +112,17 @@ class AndwMediaUI {
     private function get_mime_type_label($mime_type) {
         switch ($mime_type) {
             case 'image/jpeg':
-                return 'JPG';
+                return __('JPG', 'andw-image-control');
             case 'image/png':
-                return 'PNG';
+                return __('PNG', 'andw-image-control');
             case 'image/gif':
-                return 'GIF';
+                return __('GIF', 'andw-image-control');
             case 'image/svg+xml':
-                return 'SVG';
+                return __('SVG', 'andw-image-control');
             case 'image/webp':
-                return 'WebP';
+                return __('WebP', 'andw-image-control');
             default:
-                return 'Other';
+                return __('Other', 'andw-image-control');
         }
     }
 
