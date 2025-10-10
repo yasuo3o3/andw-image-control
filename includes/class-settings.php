@@ -6,6 +6,42 @@ if (!defined('ABSPATH')) {
 
 class AndwImageControlSettings {
 
+    /**
+     * 推奨品質値の定義（追加・変更が簡単）
+     */
+    private function get_recommended_quality_values() {
+        return array(
+            // 標準サイズ（WordPress既定）
+            'andw_jpeg_quality_thumbnail' => 82,
+            'andw_jpeg_quality_medium' => 82,
+            'andw_jpeg_quality_large' => 82,
+            'andw_jpeg_quality_default' => 82,
+
+            // WordPress隠しサイズ
+            'andw_jpeg_quality_medium_large' => 50,
+            'andw_jpeg_quality_1536x1536' => 56,
+            'andw_jpeg_quality_2048x2048' => 62,
+
+            // カスタムサイズ（サムネイル系）
+            'andw_jpeg_quality_thumb-sm' => 50,
+            'andw_jpeg_quality_thumb-md' => 50,
+            'andw_jpeg_quality_thumb-lg' => 50,
+
+            // カスタムサイズ（コンテンツ系）
+            'andw_jpeg_quality_content-sm' => 50,
+            'andw_jpeg_quality_content-md' => 50,
+            'andw_jpeg_quality_content-lg' => 53,
+
+            // カスタムサイズ（ヒーロー系）
+            'andw_jpeg_quality_hero-sm' => 56,
+            'andw_jpeg_quality_hero-md' => 59,
+            'andw_jpeg_quality_hero-lg' => 65,
+
+            // PNG→JPEG変換品質
+            'andw_png_to_jpeg_quality' => 85,
+        );
+    }
+
     public function __construct() {
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_menu', array($this, 'add_settings_page'));
@@ -19,43 +55,35 @@ class AndwImageControlSettings {
         register_setting('media', 'andw_jpeg_quality_default', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 82,
         ));
 
         register_setting('media', 'andw_convert_png_to_jpeg', array(
             'type' => 'boolean',
-            'default' => true,
         ));
 
         register_setting('media', 'andw_png_to_jpeg_quality', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 85,
         ));
 
         register_setting('media', 'andw_enable_svg_upload', array(
             'type' => 'boolean',
-            'default' => false,
         ));
 
         register_setting('media', 'andw_svg_sanitize', array(
             'type' => 'boolean',
-            'default' => true,
         ));
 
         register_setting('media', 'andw_thumbnail_override_size', array(
             'type' => 'string',
-            'default' => '',
         ));
 
         register_setting('media', 'andw_medium_override_size', array(
             'type' => 'string',
-            'default' => '',
         ));
 
         register_setting('media', 'andw_large_override_size', array(
             'type' => 'string',
-            'default' => '',
         ));
 
 
@@ -78,26 +106,11 @@ class AndwImageControlSettings {
                     'default' => $custom_sizes[$size_name]['height'],
                 ));
             }
-            // 標準サイズの場合は別途処理
+            // カスタムサイズの品質設定を登録（デフォルト値なし）
             if (!in_array($size_name, array('thumbnail', 'medium', 'large', 'full'))) {
-                // カスタムサイズごとの品質デフォルト値を設定
-                $quality_defaults = array(
-                    'thumb-sm' => 50,
-                    'thumb-md' => 50,
-                    'thumb-lg' => 50,
-                    'content-sm' => 50,
-                    'content-md' => 50,
-                    'content-lg' => 53,
-                    'hero-sm' => 56,
-                    'hero-md' => 59,
-                    'hero-lg' => 65,
-                );
-                $default_quality = isset($quality_defaults[$size_name]) ? $quality_defaults[$size_name] : 65;
-
                 register_setting('media', 'andw_jpeg_quality_' . $size_name, array(
                     'type' => 'integer',
                     'sanitize_callback' => array($this, 'sanitize_quality'),
-                    'default' => $default_quality,
                 ));
             }
         }
@@ -298,6 +311,19 @@ class AndwImageControlSettings {
 
     public function quality_section_callback() {
         echo '<p style="margin-bottom: 15px;">' . esc_html__('JPEG品質とPNG変換に関する設定です。', 'andw-image-control') . '</p>';
+
+        // 推奨値適用ボタン
+        echo '<div class="andw-recommended-section" style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #0073aa; border-radius: 3px;">';
+        echo '<h4 style="margin-top: 0; color: #0073aa;">' . esc_html__('推奨値設定', 'andw-image-control') . '</h4>';
+        echo '<button type="button" id="andw-apply-recommended-quality" class="button button-secondary" style="margin-bottom: 10px;">';
+        echo '<span class="dashicons dashicons-yes-alt" style="margin-right: 5px; line-height: 1;"></span>';
+        echo esc_html__('推奨値を適用', 'andw-image-control');
+        echo '</button>';
+        echo '<p class="description" style="margin: 0; font-size: 13px;">';
+        echo esc_html__('各サイズに最適化された品質値をフォームに入力します。保存は手動で「変更を保存」ボタンを押してください。', 'andw-image-control');
+        echo '</p>';
+        $this->render_recommended_values_info();
+        echo '</div>';
     }
 
     public function standard_hidden_section_callback() {
@@ -412,38 +438,32 @@ class AndwImageControlSettings {
     }
 
     public function modify_default_media_fields() {
-        // 標準サイズの品質設定を登録
+        // 標準サイズの品質設定を登録（デフォルト値なし - 推奨値ボタンで設定）
         register_setting('media', 'andw_jpeg_quality_thumbnail', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 82,
         ));
         register_setting('media', 'andw_jpeg_quality_medium', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 82,
         ));
         register_setting('media', 'andw_jpeg_quality_large', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 82,
         ));
 
-        // 標準非表示設定サイズの品質設定
+        // 標準非表示設定サイズの品質設定（デフォルト値なし - 推奨値ボタンで設定）
         register_setting('media', 'andw_jpeg_quality_medium_large', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 50,
         ));
         register_setting('media', 'andw_jpeg_quality_1536x1536', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 56,
         ));
         register_setting('media', 'andw_jpeg_quality_2048x2048', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_quality'),
-            'default' => 62,
         ));
 
         // thumbnail_crop の保存処理
@@ -492,13 +512,81 @@ class AndwImageControlSettings {
         return $value;
     }
 
+    /**
+     * 推奨値の説明を表示
+     */
+    private function render_recommended_values_info() {
+        echo '<div style="margin-top: 10px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 3px;">';
+        echo '<strong>' . esc_html__('推奨値の内訳:', 'andw-image-control') . '</strong>';
+        echo '<ul style="margin: 8px 0 0 20px; font-size: 12px;">';
+        echo '<li><strong>' . esc_html__('標準サイズ', 'andw-image-control') . '</strong>: 82% (' . esc_html__('WordPress標準', 'andw-image-control') . ')</li>';
+        echo '<li><strong>' . esc_html__('サムネイル系', 'andw-image-control') . '</strong>: 50% (' . esc_html__('軽量化重視', 'andw-image-control') . ')</li>';
+        echo '<li><strong>' . esc_html__('コンテンツ系', 'andw-image-control') . '</strong>: 50-53% (' . esc_html__('バランス重視', 'andw-image-control') . ')</li>';
+        echo '<li><strong>' . esc_html__('ヒーロー系', 'andw-image-control') . '</strong>: 56-65% (' . esc_html__('品質重視', 'andw-image-control') . ')</li>';
+        echo '<li><strong>' . esc_html__('PNG変換', 'andw-image-control') . '</strong>: 85% (' . esc_html__('変換時高品質', 'andw-image-control') . ')</li>';
+        echo '</ul>';
+        echo '</div>';
+    }
+
     public function add_quality_fields_script() {
         $thumbnail_quality = get_option('andw_jpeg_quality_thumbnail', 82);
         $medium_quality = get_option('andw_jpeg_quality_medium', 82);
         $large_quality = get_option('andw_jpeg_quality_large', 82);
+        $recommended_values = $this->get_recommended_quality_values();
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
+            // 推奨値設定
+            const recommendedValues = <?php echo wp_json_encode($recommended_values); ?>;
+
+            // 推奨値適用ボタンのイベントリスナー
+            $('#andw-apply-recommended-quality').on('click', function(e) {
+                e.preventDefault();
+
+                let appliedCount = 0;
+                Object.keys(recommendedValues).forEach(function(fieldId) {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.value = recommendedValues[fieldId];
+                        // 視覚的フィードバック
+                        $(field).css({
+                            'background-color': '#fffbcc',
+                            'transition': 'background-color 0.3s'
+                        });
+                        appliedCount++;
+
+                        // 2秒後に元の色に戻す
+                        setTimeout(function() {
+                            $(field).css('background-color', '');
+                        }, 2000);
+                    }
+                });
+
+                // 成功メッセージ表示
+                if (appliedCount > 0) {
+                    // 既存の通知を削除
+                    $('.andw-recommended-notice').remove();
+
+                    const notice = $('<div class="notice notice-info inline andw-recommended-notice" style="margin: 15px 0; padding: 10px;">' +
+                        '<p><strong>推奨値を入力しました。</strong> ' + appliedCount + '個の設定項目に値を設定しました。「変更を保存」ボタンで確定してください。</p>' +
+                        '</div>');
+
+                    $('.submit').before(notice);
+
+                    // 5秒後に通知を自動削除
+                    setTimeout(function() {
+                        notice.fadeOut(function() {
+                            notice.remove();
+                        });
+                    }, 5000);
+
+                    // 保存ボタンまでスクロール
+                    $('html, body').animate({
+                        scrollTop: $('.submit').offset().top - 100
+                    }, 500);
+                }
+            });
+
             // form内で最初以外のH2タイトルにスタイルを適用
             $('form h2:not(:first)').css({
                 'border-top': '1px #ddd solid',

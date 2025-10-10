@@ -4,7 +4,7 @@ Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,13 @@ The plugin is optimized for performance and only processes images during upload.
 透過は保持されず、白背景で塗りつぶされます。元のPNGファイルも保持されます。
 
 == Changelog ==
+
+= 0.3.1 =
+* **Major**: Added recommended quality values button for easy optimal settings application
+* **Major**: Improved user experience with visual feedback and guided quality configuration
+* **Enhanced**: Quality settings now use recommended values system instead of ineffective defaults
+* **Fixed**: Removed meaningless default values that were never applied due to WordPress initialization order
+* **Changed**: Author information updated to match WordPress.org submission requirements
 
 = 0.3.0 =
 * **Critical**: Fixed WordPress.DB.DirectDatabaseQuery violations in uninstall.php (replaced with WordPress API)
