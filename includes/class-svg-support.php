@@ -10,7 +10,7 @@ class AndwSvgSupport {
         add_filter('upload_mimes', array($this, 'add_svg_mime_type'));
         add_filter('wp_check_filetype_and_ext', array($this, 'fix_svg_mime_type'), 10, 4);
         add_filter('wp_handle_upload_prefilter', array($this, 'sanitize_svg'));
-        add_action('admin_head', array($this, 'fix_svg_display'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
     }
 
     public function add_svg_mime_type($mimes) {
@@ -286,8 +286,9 @@ class AndwSvgSupport {
     }
 
 
-    public function fix_svg_display() {
-        echo '<style type="text/css">
+    public function enqueue_admin_styles() {
+        // SVGサポート用のCSS
+        $css = '
             .attachment-266x266, .thumbnail img {
                 width: 100% !important;
                 height: auto !important;
@@ -296,6 +297,8 @@ class AndwSvgSupport {
                 width: 100%;
                 height: auto;
             }
-        </style>';
+        ';
+
+        wp_add_inline_style('wp-admin', $css);
     }
 }
