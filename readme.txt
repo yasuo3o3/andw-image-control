@@ -1,5 +1,5 @@
 === andW Image Control ===
-Contributors: netservicejp
+Contributors: yasuo3o3
 Tags: media, jpeg, png, image-quality, compression
 Requires at least: 5.0
 Tested up to: 6.8

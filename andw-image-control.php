@@ -3,8 +3,8 @@
  * Plugin Name: andW Image Control
  * Description: 画像品質のカスタマイズ、PNG→JPEG自動変換、独自画像サイズ管理、SVG対応、メディアライブラリUI拡張を提供します。
  * Version: 0.3.0
- * Author: Netservice
- * Author URI: https://netservice.jp/
+ * Author: yasuo3o3
+ * Author URI: https://yasuo-o.xyz/
  * License: GPLv2 or later
  * Text Domain: andw-image-control
  */
