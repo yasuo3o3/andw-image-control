@@ -1,14 +1,14 @@
 === andW Image Control ===
 Contributors: yasuo3o3
 Tags: media, jpeg, png, image-quality, compression
-Requires at least: 5.0
+Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 8.1
 Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress media control with JPEG quality settings, PNG conversion, custom sizes, SVG support, and enhanced media library.
+Professional WordPress media control plugin with advanced JPEG quality settings, PNG conversion, custom image sizes, secure SVG support, and enhanced media library features. WordPress Plugin Directory compliant.
 
 == Description ==
 

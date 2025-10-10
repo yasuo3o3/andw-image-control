@@ -1,10 +1,13 @@
 # andW Image Control
 
-[![WordPress Plugin Version](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)](https://wordpress.org/)
+[![WordPress Plugin Version](https://img.shields.io/badge/WordPress-6.0%2B-blue.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-purple.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-red.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![Plugin Directory](https://img.shields.io/badge/WordPress.org-Submission%20Ready-green.svg)](https://wordpress.org/plugins/)
 
-Advanced WordPress media control plugin with JPEG quality customization, PNG to JPEG conversion, custom image sizes, SVG support, and enhanced media library UI.
+Professional WordPress media control plugin with advanced JPEG quality customization, PNG to JPEG conversion, custom image sizes, secure SVG support, and enhanced media library UI.
+
+> **WordPress.org Submission**: This plugin has been developed following WordPress Plugin Directory guidelines and is prepared for official WordPress.org submission with comprehensive security, performance, and internationalization compliance.
 
 ## Features
 

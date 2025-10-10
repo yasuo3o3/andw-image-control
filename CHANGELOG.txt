@@ -1,6 +1,45 @@
 andW Image Control - Changelog
 ====================================
 
+v0.5.0 - 2025-01-11
+---------------------
+
+MAJOR MILESTONE:
+* WordPress Plugin Directory review compliance completed with comprehensive code quality improvements
+* All Blocker, Critical, and Major issues resolved from comprehensive security and performance audit
+* Complete internationalization (i18n) support implemented across all user-facing components
+* Performance optimizations implemented for production environments
+
+CRITICAL FIXES:
+* Fixed JavaScript localization timing issues that caused errors in recommended values feature
+* Resolved wp_localize_script timing problems in admin_footer context
+* Fixed autoload optimization to run only once using migration flag instead of every page load
+* Eliminated unnecessary database operations during plugin initialization
+
+SECURITY ENHANCEMENTS:
+* Enhanced security measures including proper nonce handling and permission checks
+* Complete output escaping compliance with WordPress.Security.EscapeOutput standards
+* All MIME type labels now properly internationalized using WordPress translation functions
+* PNG to JPEG conversion titles now use translatable sprintf format
+
+PERFORMANCE IMPROVEMENTS:
+* Optimized autoload settings to prevent unnecessary database write operations
+* Added migration flag system (andw_autoload_migration_done) to prevent redundant processes
+* Improved uninstall.php to properly clean up all plugin data including migration flags
+* Reduced memory footprint through proper autoload management
+
+INTERNATIONALIZATION (i18n):
+* Complete internationalization support with all user-facing strings properly translatable
+* JavaScript notification messages now use wp_localize_script for translation support
+* Plugin recommendation links (Regenerate Thumbnails, Force Regenerate Thumbnails) now translatable
+* All MIME type display labels converted to translation-ready format
+
+CLEANUP & MAINTENANCE:
+* Removed wp_cache_flush() from uninstall process to prevent site-wide cache disruption
+* All WPCS compliance issues resolved following WordPress best practices
+* Code follows WordPress Plugin Directory submission guidelines
+* Enhanced documentation and inline code comments for maintainability
+
 v0.3.0 - 2024-12-19
 ------------------
 
