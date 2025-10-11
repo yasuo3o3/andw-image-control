@@ -97,6 +97,7 @@ class AndwPngConverter {
 
         $attachment_data = array(
             'post_mime_type' => 'image/jpeg',
+            /* translators: %s: 元の PNG 画像のタイトル */
             'post_title' => sprintf(__('%s (JPEG)', 'andw-image-control'), $png_attachment->post_title),
             'post_content' => $png_attachment->post_content,
             'post_excerpt' => $png_attachment->post_excerpt,

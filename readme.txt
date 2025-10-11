@@ -8,7 +8,7 @@ Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Professional WordPress media control plugin with advanced JPEG quality settings, PNG conversion, custom image sizes, secure SVG support, and enhanced media library features. WordPress Plugin Directory compliant.
+Advanced media control plugin with JPEG quality, PNG conversion, SVG safety, and custom image sizes.
 
 == Description ==
 

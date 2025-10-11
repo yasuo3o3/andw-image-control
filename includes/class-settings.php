@@ -606,6 +606,7 @@ class AndwImageControlSettings {
             ),
             'i18n' => array(
                 'recommendedApplied' => __('推奨値を入力しました。', 'andw-image-control'),
+                /* translators: %d: 設定項目の数 */
                 'settingsCount' => __('%d個の設定項目に値を設定しました。', 'andw-image-control'),
                 'savePrompt' => __('「変更を保存」ボタンで確定してください。', 'andw-image-control'),
             ),
