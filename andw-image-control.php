@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 if (version_compare(PHP_VERSION, '8.1', '<')) {
     add_action('admin_notices', function() {
         echo '<div class="notice notice-error"><p>';
-        echo esc_html__('andW Image Control プラグインはPHP 8.1以上が必要です。現在のバージョン: ', 'andw-image-control') . PHP_VERSION;
+        echo esc_html__('andW Image Control プラグインはPHP 8.1以上が必要です。現在のバージョン: ', 'andw-image-control') . esc_html(PHP_VERSION);
         echo '</p></div>';
     });
     return;
