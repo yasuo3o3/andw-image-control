@@ -59,6 +59,7 @@ class AndwImageControlSettings {
 
         register_setting('media', 'andw_convert_png_to_jpeg', array(
             'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
         ));
 
         register_setting('media', 'andw_png_to_jpeg_quality', array(
@@ -68,22 +69,27 @@ class AndwImageControlSettings {
 
         register_setting('media', 'andw_enable_svg_upload', array(
             'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
         ));
 
         register_setting('media', 'andw_svg_sanitize', array(
             'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
         ));
 
         register_setting('media', 'andw_thumbnail_override_size', array(
             'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
         ));
 
         register_setting('media', 'andw_medium_override_size', array(
             'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
         ));
 
         register_setting('media', 'andw_large_override_size', array(
             'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
         ));
 
 
