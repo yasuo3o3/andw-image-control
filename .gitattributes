@@ -1,4 +1,11 @@
+#  .gitattributesに記載することでgit archiveから外れるのでZIPから除外される
+
 # ===== 共通 =====
+/assets/banner-772x250.png export-ignore
+/assets/banner-1544x500.png export-ignore
+/assets/icon-128x128.png export-ignore
+/assets/icon-256x256.png export-ignore
+/assets/screenshot-*.png export-ignore
 
 # テキスト正規化・改行コード統一
 * text=auto
@@ -174,5 +181,6 @@ debug-tools/ export-ignore
 *.zip export-ignore
 *.tar.gz export-ignore
 
-# ===== andW-Floating-Tools 専用 =====
+# ===== andW-Image-Control 専用 =====
+
 # （プラグイン固有のルールをここに追加）
